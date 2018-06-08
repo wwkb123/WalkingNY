@@ -8,15 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Image_Child_Fragment extends Fragment {
-    ViewPager viewPager;
+public class Image_Child_Fragment_Child extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.image_child_fragment,container,false);
-        viewPager = (ViewPager)view.findViewById(R.id.container2);
-        SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager());
-        viewPager.setAdapter(swipeAdapter);
+        View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
+
         return view;
     }
 }

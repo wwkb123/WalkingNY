@@ -9,4 +9,7 @@
     <string name="emailTab2">Note: If you have questions about a specific photo, head over to that photo\'s info and tap the \"Ask About Photo\" button.</string>
     <string name="emailTab3">This app was created by:\n\nLaGuardia and Wagner Archives at LagGuardia Community College/CUNY</string>
     <string name="composeEmail"><u>Tap to Compose Email</u></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
