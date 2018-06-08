@@ -11,7 +11,7 @@
         android:layout_height="42dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="27dp"
         android:text="LaGuardia and Wagner Archives LaGuardia Community College/ CUNY"
         android:textAlignment="center"
         android:textColor="@android:color/white"
