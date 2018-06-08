@@ -53,7 +53,7 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/email"
+                android:icon="@drawable/email_icon"
                 android:text="@string/tab_text_3" />
 
         </android.support.design.widget.TabLayout>

@@ -1,10 +1,9 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
+import android.graphics.PorterDuff;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Switch;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter.addFragment(new Home_Fragment(), "");
+        mSectionsPagerAdapter.addFragment(new Map_Fragment(), "");
+        mSectionsPagerAdapter.addFragment(new Email_Fragment(), "");
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -56,7 +62,46 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                switch(tab.getPosition()){
+                    case 0:
+                        tab.setIcon(R.drawable.home_icon);
+                        break;
+                    case 1:
+                        tab.setIcon(R.drawable.map_icon);
+                        break;
+                    case 2:
+                        tab.setIcon(R.drawable.email_icon);
+                        break;
+                    default:
+                        break;
+                }
+                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorPrimary);
+                tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                super.onTabUnselected(tab);
+                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorBasic);
+                tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                super.onTabReselected(tab);
+            }
+        });
+
+        tabLayout.getTabAt(1).select(); //initialization
+        tabLayout.getTabAt(0).select();
+
+
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -121,8 +166,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
             return rootView;
         }
@@ -134,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -143,13 +188,22 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
 
-            return PlaceholderFragment.newInstance(position + 1);
+            return mFragmentList.get(position);
         }
 
+        @Override
+        public String getPageTitle(int position){
+            return mFragmentTitleList.get(position);
+        }
         @Override
         public int getCount() {
             // Show 3 total pages.
             return 3;
+        }
+
+        public void addFragment(Fragment fragment,String title){
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
         }
     }
 }
