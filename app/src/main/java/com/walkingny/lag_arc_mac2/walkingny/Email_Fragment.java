@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 public class Email_Fragment extends Fragment {
-    private static final String TAG = "TAB3";
+    private static final String TAG = "TAB";
 
     @Nullable
     @Override
