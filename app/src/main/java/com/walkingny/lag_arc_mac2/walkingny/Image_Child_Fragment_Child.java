@@ -1,9 +1,12 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
+/*
+This class is the Fragment of the Fragment of the Home Tab Fragment
+ */
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -50,14 +50,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.addFragment(new Home_Fragment(), "");
-        mSectionsPagerAdapter.addFragment(new Map_Fragment(), "");
-        mSectionsPagerAdapter.addFragment(new Email_Fragment(), "");
+        mSectionsPagerAdapter.addFragment(new Home_Fragment(), "Home");  //adding Fragments to the adapter
+        mSectionsPagerAdapter.addFragment(new Map_Fragment(), "Map");
+        mSectionsPagerAdapter.addFragment(new Email_Fragment(), "Email");
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(mSectionsPagerAdapter);  //applying the adapter
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onTabSelected(tab);
                 switch(tab.getPosition()){
                     case 0:
-                        tab.setIcon(R.drawable.home_icon);
+                        tab.setIcon(R.drawable.home_icon);  //changing to filled icon
                         break;
                     case 1:
                         tab.setIcon(R.drawable.map_icon);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         break;
                 }
-                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorPrimary);
+                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorPrimary); //changing icon's selected color
                 tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
 
             }
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 super.onTabUnselected(tab);
-                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorBasic);
+                int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.colorBasic); //changing icon's unselected color
                 tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
             }
 
