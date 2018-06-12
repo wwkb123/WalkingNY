@@ -24,17 +24,21 @@ import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Image_Child_Fragment_Child extends Fragment {
     int current_position = 0;
-
+    List<JSONObject> resultArr = new ArrayList<>();
+    boolean didLoad = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
-        final TextView mTextView = (TextView) view.findViewById(R.id.textView4);
 
 //        Button refreshBtn = view.findViewById(R.id.refresh_button);
 
@@ -45,13 +49,24 @@ public class Image_Child_Fragment_Child extends Fragment {
 //            }
 //        });
 
+        Log.e("Hi","Hi");
+
         Fragment parent = getParentFragment();
         ViewPager viewPager = parent.getView().findViewById(R.id.container2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageSelected(int position) {
+
+
                   Log.e("Position in child is", position+"");
                   current_position = position;
+                  try {
+                      Log.e("Debug", "" + resultArr.get(current_position).getString("PHOTOID"));
+                  }catch (JSONException e){
+                      Log.e("Error","JSON Null");
+                  }
+
             }
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -60,7 +75,9 @@ public class Image_Child_Fragment_Child extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {}
+
         });
+
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
@@ -75,19 +92,18 @@ public class Image_Child_Fragment_Child extends Fragment {
                     public void onResponse(String response) {
                         try {
                             JSONArray response_json_arr = new JSONArray(response);
-                            // Display the response
-                            JSONObject response_json = null;
+
                             for (int i = 0; i < response_json_arr.length(); i++)
                             {
-                                response_json = response_json_arr.getJSONObject(i);
-
-                                Log.d("Debug",response_json+"");
+                                resultArr.add(response_json_arr.getJSONObject(i));
+                                Log.d("Debug",resultArr.get(i)+"");
                             }
+
                             ImageView imageView = view.findViewById(R.id.imageView);
                             Picasso.with(getActivity())
                                     .load("http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/queens/photos/03.001.0670.jpg")
                                     .resize(imageView.getWidth(),imageView.getHeight()).into(imageView);
-                            mTextView.setText("Response is: "+ response_json.getString("PHOTOID"));
+
 
                         } catch (Throwable t){
                             Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
@@ -97,7 +113,7 @@ public class Image_Child_Fragment_Child extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText("Failed to get HTTP response! Please check your Internet Connection or GPS signal");
+
             }
         });
 
