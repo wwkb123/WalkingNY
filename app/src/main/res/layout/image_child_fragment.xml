@@ -5,6 +5,17 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
+    <TextView
+        android:id="@+id/errorMsg"
+        android:layout_width="337dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        android:text="@string/error"
+        android:textSize="17sp"
+        android:visibility="invisible" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/container2"
         android:layout_width="match_parent"

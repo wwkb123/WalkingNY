@@ -20,6 +20,6 @@ public class SwipeAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount(){
-        return num_of_images; //number of image fragments
+        return num_of_images; //set number of image fragments
     }
 }
