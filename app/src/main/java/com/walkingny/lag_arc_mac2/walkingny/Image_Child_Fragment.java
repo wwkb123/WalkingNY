@@ -8,20 +8,35 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
 
 
 public class Image_Child_Fragment extends Fragment {
     ViewPager viewPager;
+    int numberOfImages;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.image_child_fragment,container,false);
         viewPager = (ViewPager)view.findViewById(R.id.container2); //a viewpager in image_child_fragment.xml, to put a child fragment in it
-        SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager());
+        SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager(), numberOfImages);
         viewPager.setAdapter(swipeAdapter); //an adapter that can allow user to swipe between images in the child fragment
         return view;
     }
+
+
 }

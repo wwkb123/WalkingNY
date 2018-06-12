@@ -6,9 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class SwipeAdapter extends FragmentStatePagerAdapter {
-
-    public SwipeAdapter(FragmentManager fm){
+    private int num_of_images = 0;
+    public SwipeAdapter(FragmentManager fm, int num_of_images_input){
         super(fm);
+        num_of_images = num_of_images_input;
     }
 
     @Override
@@ -19,6 +20,6 @@ public class SwipeAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount(){
-        return 3; //number of images
+        return num_of_images; //number of image fragments
     }
 }

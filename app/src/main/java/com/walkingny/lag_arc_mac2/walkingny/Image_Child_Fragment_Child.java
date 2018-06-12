@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -20,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,51 +32,57 @@ public class Image_Child_Fragment_Child extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
-        Button sendBtn = view.findViewById(R.id.send);
+        final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
+        Button refreshBtn = view.findViewById(R.id.refresh_button);
         final TextView mTextView = (TextView) view.findViewById(R.id.textView4);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-                //Todo replace the url with real coordinate
-                String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439&long=-73.9347";
-
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONArray response_json_arr = new JSONArray(response);
-                                    // Display the response
-                                    JSONObject response_json = null;
-                                    for (int i = 0; i < response_json_arr.length(); i++)
-                                    {
-                                         response_json = response_json_arr.getJSONObject(i);
-
-                                        Log.d("Debug",response_json.getString("PHOTOID")+"");
-                                    }
-                                    mTextView.setText("Response is: "+ response_json.getString("PHOTOID"));
-
-                                } catch (Throwable t){
-                                    Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
-                                }
-
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mTextView.setText("Failed to get HTTP response! Please check your Internet Connection or GPS signal");
-                    }
-                });
-
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
             }
         });
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        //Todo replace the url with real coordinate
+        String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439&long=-73.9347";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray response_json_arr = new JSONArray(response);
+                            // Display the response
+                            JSONObject response_json = null;
+                            for (int i = 0; i < response_json_arr.length(); i++)
+                            {
+                                response_json = response_json_arr.getJSONObject(i);
+
+                                Log.d("Debug",response_json+"");
+                            }
+                            ImageView imageView = view.findViewById(R.id.imageView);
+                            Picasso.with(getActivity())
+                                    .load("http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/queens/photos/03.001.0670.jpg")
+                                    .resize(300,300).into(imageView);
+                            mTextView.setText("Response is: "+ response_json.getString("PHOTOID"));
+
+                        } catch (Throwable t){
+                            Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText("Failed to get HTTP response! Please check your Internet Connection or GPS signal");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
         return view;
     }
 }
