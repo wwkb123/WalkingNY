@@ -7,7 +7,6 @@ This class is the Fragment of the Fragment of the Home Tab Fragment
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,30 +14,73 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Image_Child_Fragment_Child extends Fragment {
     int current_position = 0;
-    List<JSONObject> resultArr = new ArrayList<>();
-    boolean didLoad = false;
+    JSONArray arrayToPass;
 
+    public static Image_Child_Fragment_Child newInstance(int position, String array) {
+        Image_Child_Fragment_Child fragment = new Image_Child_Fragment_Child();
+        Bundle args = new Bundle();
+        args.putInt("current_position", position);
+        args.putString("arrayToPass",array);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        current_position = getArguments().getInt("current_position", 0);
+        try{
+            arrayToPass = new JSONArray(getArguments().getString("arrayToPass",""));
+        }catch (JSONException e){
+            arrayToPass = null;
+        }
+
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
+        TextView tvLabel = (TextView) view.findViewById(R.id.tv);
+        tvLabel.setText(current_position+"");
+        if(arrayToPass!=null){
+            try{
+                Log.e("PHOTO ID",current_position+" "+arrayToPass.getJSONObject(current_position).getString("PHOTOID"));
+            }catch (JSONException e){
+                Log.e("JSON id","null!");
+            }
+        }
+        Log.e("JSON id",current_position+"");
+        ImageView imageView = view.findViewById(R.id.imageView);
+        switch (current_position){
+            case 0:
+                Log.e("image's json id",current_position+"");
+                Picasso.with(getActivity())
+                        .load("http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/queens/photos/03.001.0670.jpg")
+                        .resize(300,300).into(imageView);
+                break;
+            case 1:
+                Log.e("image's json id",current_position+"");
+                Picasso.with(getActivity())
+                        .load("https://i.imgur.com/XgxWfyF.png")
+                        .resize(300,300).into(imageView);
+                break;
+            case 2:
+                Log.e("image's json id",current_position+"");
+                Picasso.with(getActivity())
+                        .load("http://3.bp.blogspot.com/-zPzIKEftmYI/VRO88LNY72I/AAAAAAAAMp8/ZfugI8aOdf4/s1600/Scroll%2BViewPager.png")
+                        .resize(300,300).into(imageView);
+                break;
+            default:
+                break;
+        }
+
+
 
 //        Button refreshBtn = view.findViewById(R.id.refresh_button);
 
@@ -48,37 +90,46 @@ public class Image_Child_Fragment_Child extends Fragment {
 //
 //            }
 //        });
+//        Bundle bundle = getArguments();
+//        current_position = bundle.getInt("currPosition",0);
+//        Log.e("new child position",current_position+"");
+//        try {
+//            arrayToPass = new JSONArray(bundle.getString("arrayToPass", ""));
+//        }catch (JSONException e){
+//            arrayToPass = null;
+//        }
+//        Fragment parent = getParentFragment();
+//        ViewPager viewPager = parent.getView().findViewById(R.id.container2);
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//
+//
+//                  Log.e("Position in child is", position+"");
+//                  current_position = position;
+//                  try {
+//                      if(arrayToPass!=null){
+//
+//                          Log.e("Debug", "" + arrayToPass.getJSONObject(current_position).getString("PHOTOID"));
+//                      }
+//
+//                  }catch (JSONException e){
+//                      Log.e("Error","JSON Null");
+//                  }
+//
+//            }
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {}
+//
+//        });
 
-        Log.e("Hi","Hi");
-
-        Fragment parent = getParentFragment();
-        ViewPager viewPager = parent.getView().findViewById(R.id.container2);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-
-
-                  Log.e("Position in child is", position+"");
-                  current_position = position;
-                  try {
-                      Log.e("Debug", "" + resultArr.get(current_position).getString("PHOTOID"));
-                  }catch (JSONException e){
-                      Log.e("Error","JSON Null");
-                  }
-
-            }
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
-
-        });
-
-
+/*
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
@@ -119,6 +170,9 @@ public class Image_Child_Fragment_Child extends Fragment {
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+
+        */
+
         return view;
     }
 }

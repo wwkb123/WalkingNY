@@ -1,23 +1,19 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.Switch;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tabLayout.getTabAt(1).select(); //initialization
-        tabLayout.getTabAt(0).select();
+      //  tabLayout.getTabAt(1).select(); //initialization
+       // tabLayout.getTabAt(0).select();
 
 
 

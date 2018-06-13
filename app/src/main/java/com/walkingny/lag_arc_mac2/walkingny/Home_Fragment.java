@@ -1,28 +1,17 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -35,7 +24,7 @@ import java.net.URL;
 public class Home_Fragment extends Fragment {
     private static final String TAG = "TAB1";
     public int numberOfImages = 0;
-
+    public String arrayToPass = "";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +57,7 @@ public class Home_Fragment extends Fragment {
                     try {
                         JSONArray response_json_arr = new JSONArray(result);
                         numberOfImages = response_json_arr.length(); //get the number of images
+                        arrayToPass = response_json_arr.toString();
                     }catch (JSONException e){
                         Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
                     }
@@ -75,6 +65,7 @@ public class Home_Fragment extends Fragment {
                     /** create a child fragment and pass the number of images */
                     Bundle bundle = new Bundle();
                     bundle.putString("num_of_images", numberOfImages+"");
+                    bundle.putString("arrayToPass", arrayToPass);
                     Fragment childFragment = new Image_Child_Fragment();
                     childFragment.setArguments(bundle);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -85,6 +76,7 @@ public class Home_Fragment extends Fragment {
                     /** create a child fragment and pass an empty child fragment */
                     Bundle bundle = new Bundle();
                     bundle.putString("num_of_images", numberOfImages+"");
+                    bundle.putString("arrayToPass", arrayToPass);
                     Fragment childFragment = new Image_Child_Fragment();
                     childFragment.setArguments(bundle);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
