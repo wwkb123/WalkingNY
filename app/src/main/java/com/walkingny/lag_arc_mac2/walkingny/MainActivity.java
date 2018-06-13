@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-      //  tabLayout.getTabAt(1).select(); //initialization
-       // tabLayout.getTabAt(0).select();
+        tabLayout.getTabAt(1).select(); //initialization
+        tabLayout.getTabAt(0).select();
 
 
 
