@@ -275,7 +275,6 @@ public class Home_Fragment extends Fragment {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        //Todo replace the url with real coordinate
         String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
 
         // Request a string response from the provided URL.

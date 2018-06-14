@@ -59,8 +59,6 @@ public class Image_Child_Fragment extends Fragment {
 
         });
 
-
-        //TODO: initializeLocation visible and images every 30 seconds
         return view;
     }
 
