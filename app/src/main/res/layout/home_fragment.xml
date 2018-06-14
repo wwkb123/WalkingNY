@@ -50,14 +50,4 @@
         android:layout_marginEnd="74dp"
         android:background="@drawable/refresh" />
 
-    <TextView
-        android:id="@+id/hiddenText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="36dp"
-        android:text="TextView"
-        android:visibility="invisible" />
-
 </RelativeLayout>
