@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,13 +52,53 @@ public class Home_Fragment extends Fragment {
     double longitude = 0.0;
     double latitude = 0.0;
 
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("granted","yay from home");
+                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    }
+                    mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                // Logic to handle location object
+                                Log.e("Location",location+"");
+                                Log.e("Long",location.getLongitude()+"");
+                                Log.e("Lat",location.getLatitude()+"");
+                                longitude = location.getLongitude();
+                                latitude = location.getLatitude();
+                            }else{
+                                Log.e("Location","null");
+                            }
+                        }
+                    });
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-
-
-
 
         sendRequest(); //load the images
 
@@ -78,9 +122,32 @@ public class Home_Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        longitude = bundle.getDouble("longitude");
-        latitude = bundle.getDouble("latitude");
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }else{
+
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        Log.e("Location",location+"");
+                        Log.e("Long",location.getLongitude()+"");
+                        Log.e("Lat",location.getLatitude()+"");
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                    }else{
+                        Log.e("Location","null");
+                    }
+                }
+            });
+        }
+//        Bundle bundle = getArguments();
+//        longitude = bundle.getDouble("longitude");
+//        latitude = bundle.getDouble("latitude");
 
         Log.e("Long in fragment",longitude+"");
         Log.e("Lat in fragment",latitude+"");
@@ -119,6 +186,23 @@ public class Home_Fragment extends Fragment {
         refresher.removeCallbacks(mStatusChecker);
     }
 
+
+    void update(){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                bundle.putString("num_of_images", numberOfImages+"");
+                bundle.putString("arrayToPass", arrayToPass);
+                Fragment childFragment = new Image_Child_Fragment();
+                childFragment.setArguments(bundle);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.replace(R.id.child_fragment_container, childFragment).commit();
+
+            }
+        }, 500);
+    }
 
     //////////////////////////////////////////
     /**
@@ -173,6 +257,7 @@ public class Home_Fragment extends Fragment {
                 childFragment.setArguments(bundle);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.replace(R.id.child_fragment_container, childFragment).commit();
+
             }
         }, 500);
 
