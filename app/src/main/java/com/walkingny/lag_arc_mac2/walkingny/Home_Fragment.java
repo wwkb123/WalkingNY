@@ -82,8 +82,8 @@ public class Home_Fragment extends Fragment {
         longitude = bundle.getDouble("longitude");
         latitude = bundle.getDouble("latitude");
 
-        Log.e("Long",longitude+"");
-        Log.e("Lat",latitude+"");
+        Log.e("Long in fragment",longitude+"");
+        Log.e("Lat in fragment",latitude+"");
     }
 
     @Override
