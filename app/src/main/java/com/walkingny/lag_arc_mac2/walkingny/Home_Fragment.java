@@ -1,9 +1,15 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -32,18 +38,23 @@ import java.net.URL;
 
 public class Home_Fragment extends Fragment {
     private static final String TAG = "TAB1";
-//    MyAsyncTask mAsyncTask;
+    //    MyAsyncTask mAsyncTask;
     public int numberOfImages = 0;
     public String arrayToPass = "";
 
     private int mInterval = 30000; // 30 seconds
     private Handler refresher; //to refresh the page every 30 seconds
 
+    double longitude = 0.0;
+    double latitude = 0.0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
+
+
+
 
         sendRequest(); //load the images
 
@@ -61,7 +72,18 @@ public class Home_Fragment extends Fragment {
         startRepeatingTask(); //refresh every 30 seconds
 
 
+
         return view;
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        longitude = bundle.getDouble("longitude");
+        latitude = bundle.getDouble("latitude");
+
+        Log.e("Long",longitude+"");
+        Log.e("Lat",latitude+"");
     }
 
     @Override
