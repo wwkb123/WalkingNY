@@ -1,15 +1,11 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -26,19 +22,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+//import java.io.BufferedInputStream;
+//import java.io.BufferedReader;
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.io.InputStreamReader;
+//import java.net.HttpURLConnection;
+//import java.net.URL;
 
 public class Home_Fragment extends Fragment {
     private static final String TAG = "TAB1";
@@ -53,6 +52,10 @@ public class Home_Fragment extends Fragment {
     double latitude = 0.0;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    LocationRequest mLocationRequest;
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -61,26 +64,7 @@ public class Home_Fragment extends Fragment {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("granted","yay from home");
-                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                    }
-                    mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                // Logic to handle location object
-                                Log.e("Location",location+"");
-                                Log.e("Long",location.getLongitude()+"");
-                                Log.e("Lat",location.getLatitude()+"");
-                                longitude = location.getLongitude();
-                                latitude = location.getLatitude();
-                            }else{
-                                Log.e("Location","null");
-                            }
-                        }
-                    });
+                    initializeLocation();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -95,12 +79,29 @@ public class Home_Fragment extends Fragment {
         }
     }
 
+    private void startLocationUpdates() {
+        try{
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,null /* Looper */);
+        }catch (SecurityException e){
+            Log.e("Security","Permission not granted!");
+        }
+
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
+        
 
-        sendRequest(); //load the images
+        
 
         ImageButton refreshBtn = view.findViewById(R.id.refresh_button);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
@@ -133,25 +134,70 @@ public class Home_Fragment extends Fragment {
                 public void onSuccess(Location location) {
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {
-                        // Logic to handle location object
-                        Log.e("Location",location+"");
-                        Log.e("Long",location.getLongitude()+"");
-                        Log.e("Lat",location.getLatitude()+"");
-                        longitude = location.getLongitude();
-                        latitude = location.getLatitude();
+                        initializeLocation(); //load location
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendRequest(); //load the images
+                            }
+                        }, 300); //delay for 0.3s to load location first
+
                     }else{
                         Log.e("Location","null");
+                        sendRequest(); //load the images
                     }
                 }
             });
-        }
-//        Bundle bundle = getArguments();
-//        longitude = bundle.getDouble("longitude");
-//        latitude = bundle.getDouble("latitude");
 
-        Log.e("Long in fragment",longitude+"");
-        Log.e("Lat in fragment",latitude+"");
+            createLocationRequest();
+
+            mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
+                        // Update UI with location data
+                        // ...
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                        Log.e("curr Location",location+"");
+                        Log.e("curr Long",longitude+"");
+                        Log.e("curr Lat",latitude+"");
+                    }
+                }
+            };
+
+
+        }////end of else
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+//        // ...
+//        super.onSaveInstanceState(outState);
+//    }
+
 
     @Override
     public void onDestroy() {
@@ -172,7 +218,7 @@ public class Home_Fragment extends Fragment {
                 sendRequest();  //refresh every 30 seconds
             } finally {
                 // 100% guarantee that this always happens, even if
-                // your update method throws an exception
+                // your initializeLocation method throws an exception
                 refresher.postDelayed(mStatusChecker, mInterval);
             }
         }
@@ -187,21 +233,35 @@ public class Home_Fragment extends Fragment {
     }
 
 
-    void update(){
+    void initializeLocation(){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Bundle bundle = new Bundle();
-                bundle.putString("num_of_images", numberOfImages+"");
-                bundle.putString("arrayToPass", arrayToPass);
-                Fragment childFragment = new Image_Child_Fragment();
-                childFragment.setArguments(bundle);
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.child_fragment_container, childFragment).commit();
+               try{
+                   mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                       @Override
+                       public void onSuccess(Location location) {
+                           // Got last known location. In some rare situations this can be null.
+                           if (location != null) {
+                               // Logic to handle location object
+                               Log.e("Location",location+"");
+                               Log.e("Long",location.getLongitude()+"");
+                               Log.e("Lat",location.getLatitude()+"");
+                               longitude = location.getLongitude();
+                               latitude = location.getLatitude();
+                           }else{
+                               Log.e("Location","null");
+                           }
+                       }
+                   });
+               }catch(SecurityException e){
+                   Log.e("Security","Permission not granted!");
+               }
+
 
             }
-        }, 500);
+        }, 100);  // delay for 0.1s to load the UI first
     }
 
     //////////////////////////////////////////
@@ -216,7 +276,7 @@ public class Home_Fragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
         //Todo replace the url with real coordinate
-        String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439&long=-73.9347";
+        String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

@@ -45,19 +45,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    double longitude = 0.0;
-    double latitude = 0.0;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
 
 //
 //
@@ -69,12 +61,7 @@ public class MainActivity extends AppCompatActivity {
         // primary sections of the activity.
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        Fragment home_Fragment = new Home_Fragment();
-//        Bundle home_bundle = new Bundle();
-//        home_bundle.putDouble("longitude", longitude);
-//        home_bundle.putDouble("latitude", latitude);
-//        home_Fragment.setArguments(home_bundle);
-        mSectionsPagerAdapter.addFragment(home_Fragment, "Home");  //adding Fragments to the adapter
+        mSectionsPagerAdapter.addFragment(new Home_Fragment(), "Home");  //adding Fragments to the adapter
         mSectionsPagerAdapter.addFragment(new Map_Fragment(), "Map");
         mSectionsPagerAdapter.addFragment(new Email_Fragment(), "Email");
 
