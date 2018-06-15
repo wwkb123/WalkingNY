@@ -61,44 +61,44 @@ public class Image_Child_Fragment_Child extends Fragment {
                 photoData.parseData(arrayToPass.getJSONObject(current_position));
                 String photoURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/";
 
-                switch (Integer.parseInt(photoData.getColID())){
-                    case 1:
+                switch (photoData.getColID()){
+                    case "01":
                         photoURL = photoURL+"laguardia/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 2:
+                    case "02":
                         photoURL = photoURL+"nycha/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 3:
+                    case "03":
                         photoURL = photoURL+"queens/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 4:
+                    case "04":
                         photoURL = photoURL+"steinway/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 5:
+                    case "05":
                         photoURL = photoURL+"NYCC/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 6:
+                    case "06":
                         photoURL = photoURL+"wagner/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 7:
+                    case "07":
                         photoURL = photoURL+"beame/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 8:
+                    case "08":
                         photoURL = photoURL+"koch/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 9:
+                    case "09":
                         photoURL = photoURL+"GIULIANI/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 10:
+                    case "10":
                         photoURL = photoURL+"Lindsay/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 11:
+                    case "11":
                         photoURL = photoURL+"Dinkins/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 12:
+                    case "12":
                         photoURL = photoURL+"Impellitteri/photos/" + photoData.getPhotoName()+".jpg";
                         break;
-                    case 13:
+                    case "13":
                         photoURL = photoURL+"ODwyer/photos/" + photoData.getPhotoName()+".jpg";
                         break;
                     default:

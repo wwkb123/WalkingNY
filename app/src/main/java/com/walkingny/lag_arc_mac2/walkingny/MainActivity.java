@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private NonSwipeViewPager mViewPager;
 
 
     @Override
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter.addFragment(new Email_Fragment(), "Email");
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);  //applying the adapter
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
