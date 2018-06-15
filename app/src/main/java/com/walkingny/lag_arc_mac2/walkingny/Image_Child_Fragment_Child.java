@@ -20,9 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class Image_Child_Fragment_Child extends Fragment {
+
     int current_position = 0;
     JSONArray arrayToPass;
-    String photoName = "";
+    JSONData photoData; //a custom object that shares the same format of the JSON data retrieved from the HTTP response
+
     public static Image_Child_Fragment_Child newInstance(int position, String array) {
         Image_Child_Fragment_Child fragment = new Image_Child_Fragment_Child();
         Bundle args = new Bundle();
@@ -49,13 +51,21 @@ public class Image_Child_Fragment_Child extends Fragment {
         TextView tvLabel = (TextView) view.findViewById(R.id.tv);
 
         //TODO:add collection id & parse JSON
-
+        photoData = new JSONData();
         if(arrayToPass!=null){
             try{
-                //tvLabel.setText(arrayToPass.getJSONObject(current_position).getString("PHOTOID"));
+                //tvLabel.setText(arrayToPass.getJSONObject(current_position).getString("PHOTOID"));       //preserved for testing
+
                 ImageView imageView = view.findViewById(R.id.imageView);
                 Log.e("JSON",""+arrayToPass.getJSONObject(current_position));
-                photoName = arrayToPass.getJSONObject(current_position).getString("PhotoName");
+
+                photoData.parseData(arrayToPass.getJSONObject(current_position));
+                String photoURL = "";
+
+                switch (photoData.getColID()){
+                    
+                }
+
                 Picasso.with(getActivity())
                         .load("http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/queens/photos/"+photoName+".jpg")
                         .resize(300,300).into(imageView);
