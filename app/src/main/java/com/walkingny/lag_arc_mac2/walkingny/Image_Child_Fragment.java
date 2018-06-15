@@ -14,11 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class Image_Child_Fragment extends Fragment {
+    private static final String TAG = "TAG";
+
     ViewPager viewPager;
     ImageView imageView;
     int numberOfImages = 0;
@@ -36,6 +39,7 @@ public class Image_Child_Fragment extends Fragment {
         arrayToPass = bundle.getString("arrayToPass", "");
 
 
+
         final SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager(), numberOfImages, arrayToPass);
         viewPager.setAdapter(swipeAdapter); //an adapter that can allow user to swipe between images in the child fragment
 
@@ -43,11 +47,16 @@ public class Image_Child_Fragment extends Fragment {
         if(numberOfImages==0){
             errorMsg.setVisibility(View.VISIBLE);
         }
+
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
              //   Log.e("curr child", position+"");
+                Fragment child = getChildFragmentManager().getFragments().get(0);
+                TextView vv = child.getView().findViewById(R.id.tv);
+                Log.e("wow",vv.getText().toString()+position);
             }
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

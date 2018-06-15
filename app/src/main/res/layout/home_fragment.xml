@@ -32,7 +32,7 @@
     </FrameLayout>
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/details_Button"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
@@ -46,7 +46,7 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/imageButton"
+        android:layout_alignTop="@+id/details_Button"
         android:layout_marginEnd="74dp"
         android:background="@drawable/refresh" />
 

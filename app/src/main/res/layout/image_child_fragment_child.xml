@@ -22,6 +22,6 @@
         android:layout_marginStart="110dp"
         android:layout_marginTop="57dp"
         android:text="TextView"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </RelativeLayout>

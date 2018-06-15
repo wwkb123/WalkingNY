@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,7 +49,7 @@ public class Image_Child_Fragment_Child extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
-        TextView tvLabel = (TextView) view.findViewById(R.id.tv);
+        final TextView tvLabel = (TextView) view.findViewById(R.id.tv);
 
         photoData = new JSONData();
         if(arrayToPass!=null){
@@ -114,7 +115,16 @@ public class Image_Child_Fragment_Child extends Fragment {
                 tvLabel.setText("null");
                 Log.e("JSON id","null!");
             }
-        }
+        }//////end if
+
+        ImageButton btn = getParentFragment().getParentFragment().getView().findViewById(R.id.details_Button); //get Home_Fragment's image button
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvLabel.setText("asd");
+                Log.e("Btn","pressed!!");
+            }
+        });
 
 
 //        ImageView imageView = view.findViewById(R.id.imageView);

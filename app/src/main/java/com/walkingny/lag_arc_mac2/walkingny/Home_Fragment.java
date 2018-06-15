@@ -45,7 +45,7 @@ public class Home_Fragment extends Fragment {
     public int numberOfImages = 0;
     public String arrayToPass = "";
 
-    private int mInterval = 30000; // 30 seconds
+    private int mInterval = 300000; // 30 seconds
     private Handler refresher; //to refresh the page every 30 seconds
 
     double longitude = 0.0;
@@ -56,6 +56,8 @@ public class Home_Fragment extends Fragment {
     LocationRequest mLocationRequest;
     private static final long INTERVAL = 1000 * 10;
     private static final long FASTEST_INTERVAL = 1000 * 5;
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -99,9 +101,6 @@ public class Home_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        
-
-        
 
         ImageButton refreshBtn = view.findViewById(R.id.refresh_button);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,11 +117,15 @@ public class Home_Fragment extends Fragment {
 
 
 
+
+
         return view;
     }
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -309,7 +312,7 @@ public class Home_Fragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Bundle bundle = new Bundle();
+               final Bundle bundle = new Bundle();
                 bundle.putString("num_of_images", numberOfImages+"");
                 bundle.putString("arrayToPass", arrayToPass);
                 Fragment childFragment = new Image_Child_Fragment();
@@ -317,13 +320,14 @@ public class Home_Fragment extends Fragment {
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.replace(R.id.child_fragment_container, childFragment).commit();
 
-            }
-        }, 500);
+        }}, 500);
 
         Log.e("request","sent!");
 
     }
     //////////////////////////////////////////
+
+
 
 
 //    class MyAsyncTask extends AsyncTask<String, Void, Boolean> {
