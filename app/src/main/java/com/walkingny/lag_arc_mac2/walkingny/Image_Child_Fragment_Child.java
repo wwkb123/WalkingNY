@@ -50,7 +50,6 @@ public class Image_Child_Fragment_Child extends Fragment {
         final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
         TextView tvLabel = (TextView) view.findViewById(R.id.tv);
 
-        //TODO:add collection id & parse JSON
         photoData = new JSONData();
         if(arrayToPass!=null){
             try{
@@ -159,7 +158,6 @@ public class Image_Child_Fragment_Child extends Fragment {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        //Todo replace the url with real coordinate
         String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439&long=-73.9347";
 
         // Request a string response from the provided URL.
