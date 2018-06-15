@@ -45,7 +45,7 @@ public class Home_Fragment extends Fragment {
     public int numberOfImages = 0;
     public String arrayToPass = "";
 
-    private int mInterval = 300000; // 30 seconds
+    private int mInterval = 180000; // 180 seconds = 3 minutes
     private Handler refresher; //to refresh the page every 30 seconds
 
     double longitude = 0.0;
