@@ -1,4 +1,32 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
-public class PhotoDetailsActivity {
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class PhotoDetailsActivity extends Activity {
+
+    JSONData photoData;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_details);
+        photoData = new JSONData();
+        Intent i = getIntent();
+        String arrayToPass = i.getStringExtra("arrayToPass");
+        try{
+            photoData.parseData(new JSONObject(arrayToPass));
+            Log.e("photo is ",photoData.getColID()+" "+photoData.getPhotoName());
+
+        }catch (JSONException e){
+            Log.e("JSON is ","null!");
+        }
+
+
+    }
 }

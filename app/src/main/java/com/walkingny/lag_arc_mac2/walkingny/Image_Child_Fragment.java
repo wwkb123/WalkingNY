@@ -4,6 +4,7 @@ package com.walkingny.lag_arc_mac2.walkingny;
 This class is the Fragment of the Home Tab Fragment
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 
 public class Image_Child_Fragment extends Fragment {
     private static final String TAG = "TAG";
@@ -26,6 +30,8 @@ public class Image_Child_Fragment extends Fragment {
     ImageView imageView;
     int numberOfImages = 0;
     String arrayToPass = "";
+    int current_position = 0;
+    JSONArray jsonArray;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -38,6 +44,13 @@ public class Image_Child_Fragment extends Fragment {
 
         arrayToPass = bundle.getString("arrayToPass", "");
 
+
+        try{
+            jsonArray = new JSONArray(arrayToPass);
+        }catch (JSONException e){
+            jsonArray = null;
+            Log.e("JSON","null");
+        }
 
 
         final SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager(), numberOfImages, arrayToPass);
@@ -56,6 +69,7 @@ public class Image_Child_Fragment extends Fragment {
              //   Log.e("curr child", position+"");
 //                Fragment child = getChildFragmentManager().getFragments().get(position);
 //                TextView currPos = child.getView().findViewById(R.id.hidden);
+                current_position = position;
                 Log.e("wow","current position from child is "+position);
             }
             @Override
@@ -68,6 +82,23 @@ public class Image_Child_Fragment extends Fragment {
 
         });
 
+        ImageButton detailsButton = getParentFragment().getView().findViewById(R.id.details_Button);
+        detailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Log.e("button curr pos",current_position+"");
+                try{
+                    Intent i = new Intent(getActivity(), PhotoDetailsActivity.class);
+                    //Log.e("button curr array",jsonArray.getJSONObject(current_position)+"");
+                    i.putExtra("arrayToPass", jsonArray.getJSONObject(current_position).toString()); //passing the info of that photo
+                    getActivity().startActivity(i); //start the activity
+
+                }catch (JSONException e){
+                    Log.e("JSON","null");
+                }
+
+            }
+        });
         return view;
     }
 
