@@ -60,15 +60,57 @@ public class Image_Child_Fragment_Child extends Fragment {
                 Log.e("JSON",""+arrayToPass.getJSONObject(current_position));
 
                 photoData.parseData(arrayToPass.getJSONObject(current_position));
-                String photoURL = "";
+                String photoURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/";
 
-                switch (photoData.getColID()){
-                    
+                switch (Integer.parseInt(photoData.getColID())){
+                    case 1:
+                        photoURL = photoURL+"laguardia/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 2:
+                        photoURL = photoURL+"nycha/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 3:
+                        photoURL = photoURL+"queens/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 4:
+                        photoURL = photoURL+"steinway/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 5:
+                        photoURL = photoURL+"NYCC/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 6:
+                        photoURL = photoURL+"wagner/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 7:
+                        photoURL = photoURL+"beame/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 8:
+                        photoURL = photoURL+"koch/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 9:
+                        photoURL = photoURL+"GIULIANI/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 10:
+                        photoURL = photoURL+"Lindsay/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 11:
+                        photoURL = photoURL+"Dinkins/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 12:
+                        photoURL = photoURL+"Impellitteri/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    case 13:
+                        photoURL = photoURL+"ODwyer/photos/" + photoData.getPhotoName()+".jpg";
+                        break;
+                    default:
+                        photoURL = photoURL+"MAP_APP_PHOTOS/" + photoData.getPhotoName()+".jpg";
+                        break;
                 }
 
-                Picasso.with(getActivity())
-                        .load("http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/queens/photos/"+photoName+".jpg")
-                        .resize(300,300).into(imageView);
+
+                Picasso.with(getActivity()).load(photoURL).resize(300,300).into(imageView);  //display the photo
+
+
             }catch (JSONException e){
                 tvLabel.setText("null");
                 Log.e("JSON id","null!");
