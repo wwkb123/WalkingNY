@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -57,6 +58,7 @@ public class Home_Fragment extends Fragment {
     private static final long INTERVAL = 1000 * 10;
     private static final long FASTEST_INTERVAL = 1000 * 5;
 
+    String url = "";
 
 
     @Override
@@ -113,7 +115,15 @@ public class Home_Fragment extends Fragment {
 
 
         refresher = new Handler();
-        startRepeatingTask(); //refresh every 30 seconds
+        startRepeatingTask(); //refresh every 3 minutes
+
+        TextView textView1 = view.findViewById(R.id.title);
+        textView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
+            }
+        });
 
 
 
@@ -166,6 +176,7 @@ public class Home_Fragment extends Fragment {
                         // ...
                         longitude = location.getLongitude();
                         latitude = location.getLatitude();
+                        url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
                         Log.e("curr Location",location+"");
                         Log.e("curr Long",longitude+"");
                         Log.e("curr Lat",latitude+"");
@@ -253,6 +264,7 @@ public class Home_Fragment extends Fragment {
                                Log.e("Lat",location.getLatitude()+"");
                                longitude = location.getLongitude();
                                latitude = location.getLatitude();
+                               url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
                            }else{
                                Log.e("Location","null");
                            }
@@ -278,7 +290,7 @@ public class Home_Fragment extends Fragment {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        String url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
+
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
