@@ -49,13 +49,12 @@ public class Image_Child_Fragment_Child extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         final View view = inflater.inflate(R.layout.image_child_fragment_child,container,false);
-        final TextView tvLabel = (TextView) view.findViewById(R.id.tv);
+        //final TextView hiddenText = view.findViewById(R.id.hidden);
+        //hiddenText.setText(current_position);       //set current position
 
         photoData = new JSONData();
         if(arrayToPass!=null){
             try{
-                //tvLabel.setText(arrayToPass.getJSONObject(current_position).getString("PHOTOID"));       //preserved for testing
-
                 ImageView imageView = view.findViewById(R.id.imageView);
                 Log.e("JSON",""+arrayToPass.getJSONObject(current_position));
 
@@ -112,19 +111,11 @@ public class Image_Child_Fragment_Child extends Fragment {
 
 
             }catch (JSONException e){
-                tvLabel.setText("null");
+                //hiddenText.setText("0");
                 Log.e("JSON id","null!");
             }
         }//////end if
 
-        ImageButton btn = getParentFragment().getParentFragment().getView().findViewById(R.id.details_Button); //get Home_Fragment's image button
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvLabel.setText("asd");
-                Log.e("Btn","pressed!!");
-            }
-        });
 
 
 //        ImageView imageView = view.findViewById(R.id.imageView);

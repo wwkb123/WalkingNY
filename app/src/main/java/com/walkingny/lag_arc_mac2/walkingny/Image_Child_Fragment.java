@@ -54,9 +54,9 @@ public class Image_Child_Fragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
              //   Log.e("curr child", position+"");
-                Fragment child = getChildFragmentManager().getFragments().get(0);
-                TextView vv = child.getView().findViewById(R.id.tv);
-                Log.e("wow",vv.getText().toString()+position);
+//                Fragment child = getChildFragmentManager().getFragments().get(position);
+//                TextView currPos = child.getView().findViewById(R.id.hidden);
+                Log.e("wow","current position from child is "+position);
             }
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
