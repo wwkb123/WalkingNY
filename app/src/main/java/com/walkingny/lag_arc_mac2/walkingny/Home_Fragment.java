@@ -69,6 +69,7 @@ public class Home_Fragment extends Fragment {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("granted","yay from home");
                     initializeLocation();
+                    doUpdates();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -142,6 +143,31 @@ public class Home_Fragment extends Fragment {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }else{
 
+            doUpdates();
+
+
+        }////end of else
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+    private void doUpdates(){
+        try{
             mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
@@ -162,49 +188,35 @@ public class Home_Fragment extends Fragment {
                     }
                 }
             });
+        }catch (SecurityException e){
+            Log.e("Error","Permission not granted");
+        }
 
-            createLocationRequest();
 
-            mLocationCallback = new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    if (locationResult == null) {
-                        return;
-                    }
-                    for (Location location : locationResult.getLocations()) {
-                        // Update UI with location data
-                        // ...
-                        longitude = location.getLongitude();
-                        latitude = location.getLatitude();
-                        url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
-                        Log.e("curr Location",location+"");
-                        Log.e("curr Long",longitude+"");
-                        Log.e("curr Lat",latitude+"");
-                    }
+        createLocationRequest();
+
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
                 }
-            };
+                for (Location location : locationResult.getLocations()) {
+                    // Update UI with location data
+                    // ...
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                    url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
+                    Log.e("curr Location",location+"");
+                    Log.e("curr Long",longitude+"");
+                    Log.e("curr Lat",latitude+"");
+                }
+            }
+        };
 
-
-        }////end of else
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         startLocationUpdates();
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }
-
-    private void stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-    }
-
 //    @Override
 //    public void onSaveInstanceState(Bundle outState) {
 //        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
@@ -217,6 +229,7 @@ public class Home_Fragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         stopRepeatingTask();
+        stopLocationUpdates();
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
