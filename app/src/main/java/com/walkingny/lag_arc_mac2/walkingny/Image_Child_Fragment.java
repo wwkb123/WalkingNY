@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +56,8 @@ public class Image_Child_Fragment extends Fragment {
             Log.e("JSON","null");
         }
 
-       // final GifTextView loadingImg = view.findViewById(R.id.loading); //GIF image of loading
-        TextView errorMsg = view.findViewById(R.id.errorMsg);
+//        final GifTextView loadingImg = view.findViewById(R.id.loading); //GIF image of loading
+//        TextView errorMsg = view.findViewById(R.id.errorMsg);
 
         final SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager(), numberOfImages, arrayToPass);
         viewPager.setAdapter(swipeAdapter); //an adapter that can allow user to swipe between images in the child fragment
@@ -64,6 +65,8 @@ public class Image_Child_Fragment extends Fragment {
 
         if(numberOfImages==0){
             //errorMsg.setVisibility(View.VISIBLE);
+            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG);
+            toast.show();
 
         }else{
             //loadingImg.setVisibility(View.INVISIBLE);
