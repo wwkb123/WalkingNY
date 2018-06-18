@@ -6,6 +6,7 @@ This class is the Fragment of the Home Tab Fragment
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import pl.droidsonroids.gif.GifTextView;
 
 
 public class Image_Child_Fragment extends Fragment {
@@ -52,14 +55,32 @@ public class Image_Child_Fragment extends Fragment {
             Log.e("JSON","null");
         }
 
+       // final GifTextView loadingImg = view.findViewById(R.id.loading); //GIF image of loading
+        TextView errorMsg = view.findViewById(R.id.errorMsg);
 
         final SwipeAdapter swipeAdapter = new SwipeAdapter(getChildFragmentManager(), numberOfImages, arrayToPass);
         viewPager.setAdapter(swipeAdapter); //an adapter that can allow user to swipe between images in the child fragment
 
-        TextView errorMsg = view.findViewById(R.id.errorMsg);
+
         if(numberOfImages==0){
-            errorMsg.setVisibility(View.VISIBLE);
+            //errorMsg.setVisibility(View.VISIBLE);
+
+        }else{
+            //loadingImg.setVisibility(View.INVISIBLE);
         }
+
+//        final Handler delayer = new Handler();  //delay displaying images for 0.5s
+//        delayer.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//
+//
+//            }}, 500);
+
+
+
+
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

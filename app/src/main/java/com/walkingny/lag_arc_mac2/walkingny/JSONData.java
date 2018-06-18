@@ -93,6 +93,10 @@ public class JSONData {
     }
 
     public String getAddress() {
+
+        if (address.equals("null")){
+            return "N/A";
+        }
         return address;
     }
 
@@ -117,6 +121,11 @@ public class JSONData {
     }
 
     public String getDesc() {
+
+        if (desc.equals("null")){
+            return "N/A";
+        }
+
         return desc;
     }
 
@@ -133,6 +142,9 @@ public class JSONData {
     }
 
     public String getCopyright() {
+        if (copyright.equals("null")){
+            return "N/A";
+        }
         return copyright;
     }
 
