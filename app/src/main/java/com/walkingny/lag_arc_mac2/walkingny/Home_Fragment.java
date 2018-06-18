@@ -343,7 +343,7 @@ public class Home_Fragment extends Fragment {
                 Fragment childFragment = new Image_Child_Fragment();
                 childFragment.setArguments(bundle);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.child_fragment_container, childFragment).commit();
+                transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
 
         }}, 500);
 
