@@ -1,7 +1,9 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -100,12 +103,13 @@ public class Home_Fragment extends Fragment {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        ImageButton refreshBtn = view.findViewById(R.id.refresh_button);
+        final ImageButton refreshBtn = view.findViewById(R.id.refresh_button);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +117,23 @@ public class Home_Fragment extends Fragment {
                 Log.e("btn","pressed!");
             }
         });
+
+        //button click effect
+        refreshBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch ( event.getAction() ) {
+                    case MotionEvent.ACTION_DOWN:
+                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh_small));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh));
+                        break;
+                }
+                return false;
+            }
+        });
+
 
 
         refresher = new Handler();
@@ -125,6 +146,7 @@ public class Home_Fragment extends Fragment {
                 url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
             }
         });
+
 
 
 

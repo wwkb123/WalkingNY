@@ -4,6 +4,7 @@ package com.walkingny.lag_arc_mac2.walkingny;
 This class is the Fragment of the Home Tab Fragment
  */
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,9 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -36,6 +39,7 @@ public class Image_Child_Fragment extends Fragment {
     String arrayToPass = "";
     int current_position = 0;
     JSONArray jsonArray;
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -106,7 +110,7 @@ public class Image_Child_Fragment extends Fragment {
 
         });
 
-        ImageButton detailsButton = getParentFragment().getView().findViewById(R.id.details_Button);
+        final ImageButton detailsButton = getParentFragment().getView().findViewById(R.id.details_Button);
         detailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +125,21 @@ public class Image_Child_Fragment extends Fragment {
                     Log.e("JSON","null");
                 }
 
+            }
+        });
+
+        detailsButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch ( event.getAction() ) {
+                    case MotionEvent.ACTION_DOWN:
+                        detailsButton.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.details_small));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        detailsButton.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.details));
+                        break;
+                }
+                return false;
             }
         });
         return view;
