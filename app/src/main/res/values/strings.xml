@@ -13,4 +13,5 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error">Failed to get HTTP response! Please check your Internet Connection or GPS signal.</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
