@@ -87,9 +87,6 @@ public class Image_Child_Fragment extends Fragment {
 
 
 
-
-
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -115,11 +112,14 @@ public class Image_Child_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Log.e("button curr pos",current_position+"");
+
                 try{
-                    Intent i = new Intent(getActivity(), PhotoDetailsActivity.class);
-                    //Log.e("button curr array",jsonArray.getJSONObject(current_position)+"");
-                    i.putExtra("arrayToPass", jsonArray.getJSONObject(current_position).toString()); //passing the info of that photo
-                    getActivity().startActivity(i); //start the activity
+                    if(jsonArray!=null){
+                        Intent i = new Intent(getActivity(), PhotoDetailsActivity.class);
+                        //Log.e("button curr array",jsonArray.getJSONObject(current_position)+"");
+                        i.putExtra("arrayToPass", jsonArray.getJSONObject(current_position).toString()); //passing the info of that photo
+                        getActivity().startActivity(i); //start the activity
+                    }
 
                 }catch (JSONException e){
                     Log.e("JSON","null");

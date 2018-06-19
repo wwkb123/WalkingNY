@@ -43,7 +43,7 @@ import org.json.JSONException;
 //import java.net.HttpURLConnection;
 //import java.net.URL;
 
-public class Home_Fragment extends Fragment {
+public class Home_Fragment extends Fragment implements FragmentLifecycle {
     private static final String TAG = "TAB1";
     //    MyAsyncTask mAsyncTask;
     public int numberOfImages = 0;
@@ -54,6 +54,8 @@ public class Home_Fragment extends Fragment {
 
     double longitude = 0.0;
     double latitude = 0.0;
+    boolean didInitialize = false;
+    boolean firstTime = true;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
@@ -88,11 +90,14 @@ public class Home_Fragment extends Fragment {
     }
 
     private void startLocationUpdates() {
-        try{
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,null /* Looper */);
-        }catch (SecurityException e){
-            Log.e("Security","Permission not granted!");
+        if(didInitialize){
+            try{
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,null /* Looper */);
+            }catch (SecurityException e){
+                Log.e("Security","Permission not granted!");
+            }
         }
+
 
     }
 
@@ -188,8 +193,15 @@ public class Home_Fragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView (){
+        super.onDestroyView();
+        Log.e("destroy view","stop");
+    }
     private void stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        if(didInitialize){
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
     }
 
 
@@ -241,7 +253,7 @@ public class Home_Fragment extends Fragment {
                 }
             }
         };
-
+        didInitialize = true;
         startLocationUpdates();  //start updating
     }
 //    @Override
@@ -376,6 +388,23 @@ public class Home_Fragment extends Fragment {
 
         Log.e("request","sent!");
 
+    }
+
+    @Override
+    public void onPauseFragment() {
+        stopLocationUpdates();
+        didInitialize = false;
+        firstTime = false;
+        Log.i(TAG, "onPauseFragment()"+didInitialize+" "+firstTime);
+    }
+
+    @Override
+    public void onResumeFragment() {
+        Log.i(TAG, "onResumeFragment()"+didInitialize);
+        if (didInitialize || !firstTime){
+            doUpdates();
+        }
+        startLocationUpdates();
     }
     //////////////////////////////////////////
 

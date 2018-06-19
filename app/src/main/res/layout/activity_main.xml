@@ -8,6 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/main_hidden"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yes"
+        android:visibility="invisible" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -63,7 +70,9 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+    </com.walkingny.lag_arc_mac2.walkingny.NonSwipeViewPager>
 
     <!--<android.support.design.widget.FloatingActionButton-->
         <!--android:id="@+id/fab"-->
