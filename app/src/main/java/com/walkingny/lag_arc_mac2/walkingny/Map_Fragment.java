@@ -101,26 +101,29 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    for(int i=0;i<response_json_arr.length();i++){
-                        double markerLat = 0.0;
-                        double markerLong = 0.0;
-                        String markerAddress = "";
-                        LatLng markerPosition;
-                        try{
-                            JSONObject marker = response_json_arr.getJSONObject(i);
-                            JSONData markerData = new JSONData();
-                            markerData.parseData(marker);
-                            markerLat = markerData.getLatitude();
-                            markerLong = markerData.getLongitude();
-                            markerAddress = markerData.getAddress();
-                            markerPosition = new LatLng(markerLat,markerLong);
-                            mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
+                    if(response_json_arr!=null){
+                        for(int i=0;i<response_json_arr.length();i++){
+                            double markerLat = 0.0;
+                            double markerLong = 0.0;
+                            String markerAddress = "";
+                            LatLng markerPosition;
+                            try{
+                                JSONObject marker = response_json_arr.getJSONObject(i);
+                                JSONData markerData = new JSONData();
+                                markerData.parseData(marker);
+                                markerLat = markerData.getLatitude();
+                                markerLong = markerData.getLongitude();
+                                markerAddress = markerData.getAddress();
+                                markerPosition = new LatLng(markerLat,markerLong);
+                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
 
 
-                        }catch (JSONException e){
-                            Log.e("JSON object","is null");
-                        }
-                    }//end of for loop
+                            }catch (JSONException e){
+                                Log.e("JSON object","is null");
+                            }
+                        }//end of for loop
+                    }
+
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
                 }}, 500);
 
