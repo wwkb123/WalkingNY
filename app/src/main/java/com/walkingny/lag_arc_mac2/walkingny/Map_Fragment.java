@@ -125,7 +125,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                     }
 
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
-                }}, 500);
+                }}, 1000);
 
 
 
