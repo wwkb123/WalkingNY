@@ -193,7 +193,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                     Log.e("curr Long from map",longitude+"");
                     Log.e("curr Lat from map",latitude+"");
                     LatLng curr = new LatLng(latitude,longitude);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(curr));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
                 }
             }
         };
