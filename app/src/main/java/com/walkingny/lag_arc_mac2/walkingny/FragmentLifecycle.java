@@ -6,6 +6,8 @@ package com.walkingny.lag_arc_mac2.walkingny;
  *  So in standard ViewPager it is impossible to update fragment when it is displayed,
  *  since there is no lifecycle method that is called when fragment is displayed.
  *
+ *  Credits:    https://looksok.wordpress.com/2013/11/02/viewpager-with-detailed-fragment-lifecycle-onresumefragment-including-source-code/
+ *
  *  This interface is designed for handling lifecycle between fragments
  *
  */

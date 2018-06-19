@@ -140,13 +140,15 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(1).select(); //initialization
         tabLayout.getTabAt(0).select();
 
+
+        //---------delay setting firstTime to false for 0.5s, to wait until the above codes are set up---------//
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 firstTime = false;
-                
+
             }}, 500);
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -15,7 +16,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,11 +27,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class Map_Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, FragmentLifecycle {
     private static final String TAG = "TAB2";
     private GoogleMap mMap;
+    double longitude = 0.0;
+    double latitude = 0.0;
+    boolean didInitialize = false;
+    boolean didStartUpdate = false;
+
     private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    LocationRequest mLocationRequest;
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
 
     @Nullable
     @Override
@@ -36,11 +50,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        try{
-            Log.e("Last location is ",""+mFusedLocationClient.getLastLocation());
-        }catch(SecurityException e){
-
-        }
 
 
         return view;
@@ -69,8 +78,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
 
-//            LatLng curr = new LatLng();
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(curr));
+
         }catch (SecurityException e){
 
         }
@@ -90,14 +98,115 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         return false;
     }
 
+    private void startLocationUpdates() {
+        if(didInitialize){
+            try{
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,null /* Looper */);
+            }catch (SecurityException e){
+                Log.e("Security","Permission not granted!");
+            }
+        }
+
+
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
 
     @Override
     public void onPauseFragment() {
-        Log.i(TAG, "onPauseFragment()");
+        stopLocationUpdates();
+        didInitialize = false;
+        didStartUpdate = false;
+        Log.i(TAG, "onPauseFragment()"+didInitialize);
     }
 
     @Override
     public void onResumeFragment() {
-        Log.i(TAG, "onResumeFragment()");
+        Log.i(TAG, "onResumeFragment()"+didInitialize);
+        if (!didStartUpdate){
+            doUpdates();
+        }
+        didStartUpdate = true;
+    }
+
+    private void stopLocationUpdates() {
+        if(didInitialize){
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
+    }
+
+
+    //---------a method to start updating location---------//
+    private void doUpdates(){
+        try{
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(final Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    // Got last known location. In some rare situations this can be null.
+                                        Log.e("Location from map",location+"");
+                                        Log.e("Long from map",location.getLongitude()+"");
+                                        Log.e("Lat from map",location.getLatitude()+"");
+                                        longitude = location.getLongitude();
+                                        latitude = location.getLatitude();
+                                }catch(SecurityException e){
+                                    Log.e("Security","Permission not granted!");
+                                }
+                            }
+                        }, 100); // delay for 0.1s to load the UI first
+
+                    }else{
+                        Log.e("Location from map","null");
+                    }
+                }
+            });
+        }catch (SecurityException e){
+            Log.e("Error","Permission not granted");
+        }
+
+
+        createLocationRequest(); //create a request
+
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    // Update location data
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                    Log.e("curr Location from map",location+"");
+                    Log.e("curr Long from map",longitude+"");
+                    Log.e("curr Lat from map",latitude+"");
+                    LatLng curr = new LatLng(latitude,longitude);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(curr));
+                }
+            }
+        };
+        didInitialize = true;
+        startLocationUpdates();  //start updating
+    }
+    //---------end of method---------//
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopLocationUpdates();
+//        mAsyncTask.cancel(true);
+        Log.e("stop","stop");
     }
 }

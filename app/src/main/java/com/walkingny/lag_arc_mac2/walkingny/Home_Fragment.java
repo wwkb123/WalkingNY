@@ -163,9 +163,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+        //---------Request external storage permission for Google Play services SDK less than version 8.3---------//
+        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        }
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
         //---------Request location permission---------//
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -174,30 +177,11 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
             doUpdates();
         }////end of else
 
-        //---------Request external storage permission for Google Play services SDK less than version 8.3---------//
-        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-        }
+
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    public void onDestroyView (){
-        super.onDestroyView();
-        Log.e("destroy view","stop");
-    }
     private void stopLocationUpdates() {
         if(didInitialize){
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -393,6 +377,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     @Override
     public void onPauseFragment() {
         stopLocationUpdates();
+        stopRepeatingTask();
         didInitialize = false;
         firstTime = false;
         Log.i(TAG, "onPauseFragment()"+didInitialize+" "+firstTime);
@@ -405,6 +390,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
             doUpdates();
         }
         startLocationUpdates();
+        startRepeatingTask();
     }
     //////////////////////////////////////////
 
