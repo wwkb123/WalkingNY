@@ -133,7 +133,7 @@ public class Image_Child_Fragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 switch ( event.getAction() ) {
                     case MotionEvent.ACTION_DOWN:
-                        detailsButton.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.details_small));
+                        detailsButton.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.details_grey));
                         break;
                     case MotionEvent.ACTION_UP:
                         detailsButton.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.details));

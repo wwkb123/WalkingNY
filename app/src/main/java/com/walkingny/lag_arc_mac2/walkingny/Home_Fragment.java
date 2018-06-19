@@ -124,7 +124,7 @@ public class Home_Fragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 switch ( event.getAction() ) {
                     case MotionEvent.ACTION_DOWN:
-                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh_small));
+                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh_grey));
                         break;
                     case MotionEvent.ACTION_UP:
                         refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh));
