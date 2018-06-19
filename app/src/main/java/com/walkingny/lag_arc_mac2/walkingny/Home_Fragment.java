@@ -160,15 +160,19 @@ public class Home_Fragment extends Fragment {
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        //---------Request location permission---------//
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }else{
-
             doUpdates();
-
-
         }////end of else
+
+        //---------Request external storage permission for Google Play services SDK less than version 8.3---------//
+        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        }
 
     }
 
@@ -188,6 +192,8 @@ public class Home_Fragment extends Fragment {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
+
+    //---------a method to start updating location---------//
     private void doUpdates(){
         try{
             mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -215,7 +221,7 @@ public class Home_Fragment extends Fragment {
         }
 
 
-        createLocationRequest();
+        createLocationRequest(); //create a request
 
 
         mLocationCallback = new LocationCallback() {
@@ -225,8 +231,7 @@ public class Home_Fragment extends Fragment {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    // Update UI with location data
-                    // ...
+                    // Update location data
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
                     url ="http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat="+latitude+"&long="+longitude;
@@ -237,7 +242,7 @@ public class Home_Fragment extends Fragment {
             }
         };
 
-        startLocationUpdates();
+        startLocationUpdates();  //start updating
     }
 //    @Override
 //    public void onSaveInstanceState(Bundle outState) {

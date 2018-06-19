@@ -106,7 +106,7 @@ public class Image_Child_Fragment_Child extends Fragment {
                         break;
                 }
 
-
+                Log.e("Photo's URL us",photoURL+"");
                 Picasso.with(getActivity()).load(photoURL).resize(300,300).into(imageView);  //display the photo
 
 
