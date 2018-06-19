@@ -1,23 +1,27 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
-import android.app.Activity;
-import android.content.Context;
+
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
@@ -26,10 +30,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class Map_Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, FragmentLifecycle {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+public class Map_Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMarkerClickListener, FragmentLifecycle {
     private static final String TAG = "TAB2";
     private GoogleMap mMap;
     double longitude = 0.0;
@@ -42,6 +52,9 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     LocationRequest mLocationRequest;
     private static final long INTERVAL = 1000 * 10;
     private static final long FASTEST_INTERVAL = 1000 * 5;
+
+    JSONArray response_json_arr;
+
 
     @Nullable
     @Override
@@ -70,13 +83,47 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(40.738002399999999, -73.957547599999998);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Test"));
+
         try {
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
+            mMap.setOnMarkerClickListener(this);
+            loadJSON();
+
+            /**
+             *  Reserve 0.5 seconds for the device to load the data
+             */
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i=0;i<response_json_arr.length();i++){
+                        double markerLat = 0.0;
+                        double markerLong = 0.0;
+                        String markerAddress = "";
+                        LatLng markerPosition;
+                        try{
+                            JSONObject marker = response_json_arr.getJSONObject(i);
+                            JSONData markerData = new JSONData();
+                            markerData.parseData(marker);
+                            markerLat = markerData.getLatitude();
+                            markerLong = markerData.getLongitude();
+                            markerAddress = markerData.getAddress();
+                            markerPosition = new LatLng(markerLat,markerLong);
+                            mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
+
+
+                        }catch (JSONException e){
+                            Log.e("JSON object","is null");
+                        }
+                    }//end of for loop
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
+                }}, 500);
+
 
 
         }catch (SecurityException e){
@@ -85,18 +132,68 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+    //------------------Google Maps buttons------------------//
+
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
     }
+
+    @Override
+    public boolean onMarkerClick (Marker marker){
+        Log.e("Marker id is ",marker.getId());
+        return false;
+    }
+    //------------------end of buttons------------------//
+
+
+
+
+    //------------------method of loading all the JSON data------------------//
+
+    public void loadJSON(){
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=json";
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            response_json_arr = new JSONArray(response);
+                        }catch (JSONException e) {
+                            Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+
+
+    }
+
+    //------------------end of this method------------------//
+
+
+
+
+    //------------------methods of updating location------------------//
 
     private void startLocationUpdates() {
         if(didInitialize){
@@ -117,22 +214,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @Override
-    public void onPauseFragment() {
-        stopLocationUpdates();
-        didInitialize = false;
-        didStartUpdate = false;
-        Log.i(TAG, "onPauseFragment()"+didInitialize);
-    }
-
-    @Override
-    public void onResumeFragment() {
-        Log.i(TAG, "onResumeFragment()"+didInitialize);
-        if (!didStartUpdate){
-            doUpdates();
-        }
-        didStartUpdate = true;
-    }
 
     private void stopLocationUpdates() {
         if(didInitialize){
@@ -141,7 +222,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
-    //---------a method to start updating location---------//
+    //////////---------a method to start updating location---------//////////
     private void doUpdates(){
         try{
             mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -193,15 +274,22 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                     Log.e("curr Long from map",longitude+"");
                     Log.e("curr Lat from map",latitude+"");
                     LatLng curr = new LatLng(latitude,longitude);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
+                    //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
                 }
             }
         };
         didInitialize = true;
         startLocationUpdates();  //start updating
     }
-    //---------end of method---------//
+    //////////------------------end of this method-----------------//////////
 
+
+    //------------------end of methods section--------------------//
+
+
+
+
+    //------------------Lifecycles------------------//
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -209,4 +297,23 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
+
+
+    @Override
+    public void onPauseFragment() {
+        stopLocationUpdates();
+        didInitialize = false;
+        didStartUpdate = false;
+        Log.i(TAG, "onPauseFragment()"+didInitialize);
+    }
+
+    @Override
+    public void onResumeFragment() {
+        Log.i(TAG, "onResumeFragment()"+didInitialize);
+        if (!didStartUpdate){
+            doUpdates();
+        }
+        didStartUpdate = true;
+    }
+    //------------------end of lifecycles------------------//
 }
