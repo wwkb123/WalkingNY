@@ -166,6 +166,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         //Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15));
         return false;
     }
 
