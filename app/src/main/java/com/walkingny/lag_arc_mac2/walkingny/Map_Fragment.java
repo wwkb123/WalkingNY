@@ -48,12 +48,15 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     double latitude = 0.0;
     boolean didInitialize = false;
     boolean didStartUpdate = false;
+    boolean didLoadMarkers = false;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     LocationRequest mLocationRequest;
-    private static final long INTERVAL = 1000 * 10;
-    private static final long FASTEST_INTERVAL = 1000 * 5;
+
+    //location update interval
+    private static final long INTERVAL = 1000 * 10;  //10s
+    private static final long FASTEST_INTERVAL = 1000 * 5;  //5s
 
     JSONArray response_json_arr;
 
@@ -85,6 +88,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.clear();
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(40.738002399999999, -73.957547599999998);
@@ -95,46 +99,51 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
 //            mMap.setOnMarkerClickListener(mClusterManager);
+
             loadJSON();
+
             setUpClusterer();
 
             /**
              *  Reserve 0.5 seconds for the device to load the data
              */
 
+
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(response_json_arr!=null){
-                        for(int i=0;i<response_json_arr.length();i++){
-                            double markerLat = 0.0;
-                            double markerLong = 0.0;
-                            String markerAddress = "";
-                            //LatLng markerPosition;
-                            try{
-                                JSONObject marker = response_json_arr.getJSONObject(i);
-                                JSONData markerData = new JSONData();
-                                markerData.parseData(marker);
-                                markerLat = markerData.getLatitude();
-                                markerLong = markerData.getLongitude();
-                                markerAddress = markerData.getAddress();
+//                    if(!didLoadMarkers) {
+                        if(response_json_arr!=null){
+                            for(int i = 0; i < response_json_arr.length(); i++){
+                                double markerLat = 0.0;
+                                double markerLong = 0.0;
+                                String markerAddress = "";
+                                //LatLng markerPosition;
+                                try{
+                                    JSONObject marker = response_json_arr.getJSONObject(i);
+                                    JSONData markerData = new JSONData();
+                                    markerData.parseData(marker);
+                                    markerLat = markerData.getLatitude();
+                                    markerLong = markerData.getLongitude();
+                                    markerAddress = markerData.getAddress();
 //                                markerPosition = new LatLng(markerLat,markerLong);
 //                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
 
-                                // Add cluster items (markers) to the cluster manager.
-                                addItems(markerLat,markerLong,markerAddress, i);
+                                    // Add cluster items (markers) to the cluster manager.
+                                    addItems(markerLat,markerLong,markerAddress, i);
 
 
 
-                            }catch (JSONException e){
-                                Log.e("JSON object","is null");
-                            }
-                        }//end of for loop
+                                }catch (JSONException e){
+                                    Log.e("JSON object","is null");
+                                }
+                            }//end of for loop
+
+                        } //end of if json null
                         mClusterManager.cluster();
-                    }
-
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
+//                    } //end of if didLoadMarkers
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15));
                 }}, 1000);
 
 
@@ -439,6 +448,8 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         stopLocationUpdates();
         didInitialize = false;
         didStartUpdate = false;
+        mMap.clear();
+        didLoadMarkers = true;  //finished
         Log.i(TAG, "onPauseFragment()"+didInitialize);
     }
 
