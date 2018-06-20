@@ -95,6 +95,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             mMap.setOnMyLocationClickListener(this);
             mMap.setOnMarkerClickListener(this);
             loadJSON();
+            setUpClusterer();
 
             /**
              *  Reserve 0.5 seconds for the device to load the data
@@ -118,7 +119,11 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                                 markerLong = markerData.getLongitude();
                                 markerAddress = markerData.getAddress();
                                 markerPosition = new LatLng(markerLat,markerLong);
-                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
+//                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
+
+                                // Add cluster items (markers) to the cluster manager.
+                                addItems(markerLat,markerLong);
+
 
 
                             }catch (JSONException e){
@@ -176,24 +181,19 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
 
-        // Add cluster items (markers) to the cluster manager.
-        addItems();
     }
 
-    private void addItems() {
+    private void addItems(double lat, double lng ) {
 
-        // Set some lat/lng coordinates to start with.
-        double lat = 51.5145160;
-        double lng = -0.1270060;
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 10; i++) {
-            double offset = i / 60d;
-            lat = lat + offset;
-            lng = lng + offset;
+        // Add ten cluster items in close proximity
+//        for (int i = 0; i < 10; i++) {
+//            double offset = i / 60d;
+//            lat = lat + offset;
+//            lng = lng + offset;
             MarkerItem offsetItem = new MarkerItem(lat, lng);
             mClusterManager.addItem(offsetItem);
-        }
+//        }
+
     }
 
     //------------------end of clustering methods------------------//

@@ -27,7 +27,6 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import pl.droidsonroids.gif.GifTextView;
 
 
 public class Image_Child_Fragment extends Fragment {
