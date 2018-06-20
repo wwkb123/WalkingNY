@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -93,7 +94,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
-            mMap.setOnMarkerClickListener(this);
+//            mMap.setOnMarkerClickListener(mClusterManager);
             loadJSON();
             setUpClusterer();
 
@@ -118,11 +119,11 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                                 markerLat = markerData.getLatitude();
                                 markerLong = markerData.getLongitude();
                                 markerAddress = markerData.getAddress();
-                                markerPosition = new LatLng(markerLat,markerLong);
+//                                markerPosition = new LatLng(markerLat,markerLong);
 //                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
 
                                 // Add cluster items (markers) to the cluster manager.
-                                addItems(markerLat,markerLong);
+                                addItems(markerLat,markerLong,markerAddress);
 
 
 
@@ -130,6 +131,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                                 Log.e("JSON object","is null");
                             }
                         }//end of for loop
+                        mClusterManager.cluster();
                     }
 
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
@@ -180,21 +182,86 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         // manager.
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MarkerItem> cluster) {
+                return false;
+            }
+        });
+
+        mClusterManager.setOnClusterInfoWindowClickListener(new ClusterManager.OnClusterInfoWindowClickListener<MarkerItem>() {
+            @Override
+            public void onClusterInfoWindowClick(Cluster<MarkerItem> cluster) {
+
+            }
+        });
+
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MarkerItem>() {
+            @Override
+            public boolean onClusterItemClick(MarkerItem markerItem) {
+                //Log.e("Marker is",markerItem.getPosition().toString());
+                return false;
+            }
+        });
+
+        mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<MarkerItem>() {
+            @Override
+            public void onClusterItemInfoWindowClick(MarkerItem markerItem) {
+                Log.e("Marker title is ",markerItem.getTitle());
+            }
+        });
+
 
     }
 
-    private void addItems(double lat, double lng ) {
+    private void addItems(double lat, double lng, String title ) {
 
         // Add ten cluster items in close proximity
 //        for (int i = 0; i < 10; i++) {
 //            double offset = i / 60d;
 //            lat = lat + offset;
 //            lng = lng + offset;
-            MarkerItem offsetItem = new MarkerItem(lat, lng);
+            MarkerItem offsetItem = new MarkerItem(lat, lng, title,  "Click to see more info");
             mClusterManager.addItem(offsetItem);
 //        }
 
     }
+
+    //------------------a class implements clustering of the markers------------------//
+    public class MarkerItem implements ClusterItem {
+        private final LatLng mPosition;
+        private String mTitle;
+        private String mSnippet;
+
+        public MarkerItem(double lat, double lng) {
+            mPosition = new LatLng(lat, lng);
+        }
+
+        public MarkerItem(double lat, double lng, String title, String snippet) {
+            mPosition = new LatLng(lat, lng);
+            mTitle = title;
+            mSnippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return mPosition;
+        }
+
+        @Override
+        public String getTitle() {
+            return mTitle;
+        }
+
+        @Override
+        public String getSnippet() {
+            return mSnippet;
+        }
+    }
+
+    //------------------end of class------------------//
 
     //------------------end of clustering methods------------------//
 
@@ -363,37 +430,4 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     //------------------end of lifecycles------------------//
 
 
-
-
-    //------------------a class implements clustering of the markers------------------//
-    public class MarkerItem implements ClusterItem {
-        private final LatLng mPosition;
-        private String mTitle;
-        private String mSnippet;
-
-        public MarkerItem(double lat, double lng) {
-            mPosition = new LatLng(lat, lng);
-        }
-
-        public MarkerItem(double lat, double lng, String title, String snippet) {
-            mPosition = new LatLng(lat, lng);
-            mTitle = title;
-            mSnippet = snippet;
-        }
-
-        @Override
-        public LatLng getPosition() {
-            return mPosition;
-        }
-
-        @Override
-        public String getTitle() {
-            return mTitle;
-        }
-
-        @Override
-        public String getSnippet() {
-            return mSnippet;
-        }
-    }
 }
