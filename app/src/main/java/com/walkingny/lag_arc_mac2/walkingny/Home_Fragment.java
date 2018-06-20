@@ -2,6 +2,7 @@ package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.Location;
@@ -152,27 +153,43 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
             }
         });
 
-
-
-
-
-
         return view;
     }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
 
         //---------Request external storage permission for Google Play services SDK less than version 8.3---------//
-        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-        }
+//        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+//        }
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
         //---------Request location permission---------//
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+//        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+//        }
+
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(!hasPermissions(getActivity(), PERMISSIONS)){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
         }else{
             doUpdates();
         }////end of else

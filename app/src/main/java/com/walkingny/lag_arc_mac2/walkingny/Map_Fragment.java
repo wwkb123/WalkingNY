@@ -58,6 +58,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     JSONArray response_json_arr;
 
     private ClusterManager<MarkerItem> mClusterManager;
+    SupportMapFragment mapFragment;
 
 
 
@@ -65,9 +66,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.map_fragment,container,false);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
 
 
         return view;
@@ -112,7 +111,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                             double markerLat = 0.0;
                             double markerLong = 0.0;
                             String markerAddress = "";
-                            LatLng markerPosition;
+                            //LatLng markerPosition;
                             try{
                                 JSONObject marker = response_json_arr.getJSONObject(i);
                                 JSONData markerData = new JSONData();
@@ -446,6 +445,9 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onResumeFragment() {
         Log.i(TAG, "onResumeFragment()"+didInitialize);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (!didStartUpdate){
             doUpdates();
         }
