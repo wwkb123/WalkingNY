@@ -1,6 +1,7 @@
 package com.walkingny.lag_arc_mac2.walkingny;
 
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -123,7 +124,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
 //                                mMap.addMarker(new MarkerOptions().position(markerPosition).title(markerAddress));
 
                                 // Add cluster items (markers) to the cluster manager.
-                                addItems(markerLat,markerLong,markerAddress);
+                                addItems(markerLat,markerLong,markerAddress, i);
 
 
 
@@ -162,7 +163,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public boolean onMarkerClick (Marker marker){
-        Log.e("Marker id is ",marker.getId());
+        //Log.e("Marker id is ",marker.getId());
         return false;
     }
     //------------------end of buttons------------------//
@@ -206,24 +207,41 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
 
+
+        /**
+         *  When click the Info Window of a marker, pops up a detail info page
+         */
         mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<MarkerItem>() {
             @Override
             public void onClusterItemInfoWindowClick(MarkerItem markerItem) {
-                Log.e("Marker title is ",markerItem.getTitle());
+               // Log.e("Marker title is ",markerItem.getTitle());
+                if(response_json_arr!=null){
+                    try {
+
+                        //Log.e("MarkerItem json is",response_json_arr.getJSONObject(markerItem.getId())+"");
+                        Intent i = new Intent(getActivity(), PhotoDetailsActivity.class);
+                        i.putExtra("arrayToPass",response_json_arr.getJSONObject(markerItem.getId()).toString()); //passing the info of that photo
+                        getActivity().startActivity(i);  //start the activity
+
+                    }catch(JSONException e){
+                        Log.e("JSON","null");
+                    }
+                }
+
             }
         });
 
 
     }
 
-    private void addItems(double lat, double lng, String title ) {
+    private void addItems(double lat, double lng, String title, int id ) {
 
         // Add ten cluster items in close proximity
 //        for (int i = 0; i < 10; i++) {
 //            double offset = i / 60d;
 //            lat = lat + offset;
 //            lng = lng + offset;
-            MarkerItem offsetItem = new MarkerItem(lat, lng, title,  "Click to see more info");
+            MarkerItem offsetItem = new MarkerItem(lat, lng, title,  "Click to see more info", id);
             mClusterManager.addItem(offsetItem);
 //        }
 
@@ -234,15 +252,17 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         private final LatLng mPosition;
         private String mTitle;
         private String mSnippet;
+        private int mId;
 
         public MarkerItem(double lat, double lng) {
             mPosition = new LatLng(lat, lng);
         }
 
-        public MarkerItem(double lat, double lng, String title, String snippet) {
+        public MarkerItem(double lat, double lng, String title, String snippet, int id) {
             mPosition = new LatLng(lat, lng);
             mTitle = title;
             mSnippet = snippet;
+            mId = id;
         }
 
         @Override
@@ -258,6 +278,10 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         @Override
         public String getSnippet() {
             return mSnippet;
+        }
+
+        public int getId(){
+            return mId;
         }
     }
 
