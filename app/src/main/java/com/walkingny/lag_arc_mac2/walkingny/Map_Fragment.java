@@ -7,12 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,6 +31,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +54,9 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     private static final long FASTEST_INTERVAL = 1000 * 5;
 
     JSONArray response_json_arr;
+
+    private ClusterManager<MarkerItem> mClusterManager;
+
 
 
     @Nullable
@@ -156,6 +159,45 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         return false;
     }
     //------------------end of buttons------------------//
+
+
+
+
+    //------------------methods of setting up clustering------------------//
+
+    private void setUpClusterer() {
+
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        mClusterManager = new ClusterManager<MarkerItem>(getContext(), mMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+
+        // Add cluster items (markers) to the cluster manager.
+        addItems();
+    }
+
+    private void addItems() {
+
+        // Set some lat/lng coordinates to start with.
+        double lat = 51.5145160;
+        double lng = -0.1270060;
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        for (int i = 0; i < 10; i++) {
+            double offset = i / 60d;
+            lat = lat + offset;
+            lng = lng + offset;
+            MarkerItem offsetItem = new MarkerItem(lat, lng);
+            mClusterManager.addItem(offsetItem);
+        }
+    }
+
+    //------------------end of clustering methods------------------//
+
 
 
 
@@ -319,4 +361,39 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         didStartUpdate = true;
     }
     //------------------end of lifecycles------------------//
+
+
+
+
+    //------------------a class implements clustering of the markers------------------//
+    public class MarkerItem implements ClusterItem {
+        private final LatLng mPosition;
+        private String mTitle;
+        private String mSnippet;
+
+        public MarkerItem(double lat, double lng) {
+            mPosition = new LatLng(lat, lng);
+        }
+
+        public MarkerItem(double lat, double lng, String title, String snippet) {
+            mPosition = new LatLng(lat, lng);
+            mTitle = title;
+            mSnippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return mPosition;
+        }
+
+        @Override
+        public String getTitle() {
+            return mTitle;
+        }
+
+        @Override
+        public String getSnippet() {
+            return mSnippet;
+        }
+    }
 }
