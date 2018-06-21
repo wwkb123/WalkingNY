@@ -2,10 +2,14 @@ package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -67,6 +71,20 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
     String url = "";
 
+
+    /**
+     * Following broadcast receiver is to listen the Location button toggle state in Android.
+     */
+    private BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                // Make an action or refresh an already managed state.
+                Log.e("GPS Status", "Changed!");
+            }
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -144,7 +162,6 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
 
         refresher = new Handler();
-        startRepeatingTask(); //refresh every 3 minutes
 
         TextView textView1 = view.findViewById(R.id.title);
         textView1.setOnClickListener(new View.OnClickListener() {
@@ -174,21 +191,10 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
 
-        //---------Request external storage permission for Google Play services SDK less than version 8.3---------//
-//        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-//            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-//        }
-
-
-        //---------Request location permission---------//
-//        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-//        }
-
+        //---------Request location permission, also external storage permission for Google Play services SDK less than version 8.3---------//
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
-
+        getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         if(!hasPermissions(getActivity(), PERMISSIONS)){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
         }else{
@@ -221,8 +227,9 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                             @Override
                             public void run() {
                                 sendRequest(); //load the images
+                                Log.e("Location","loaded");
                             }
-                        }, 300); //delay for 0.3s to load location first
+                        }, 400); //delay for 0.4s to load location first
 
                     }else{
                         Log.e("Location","null");
@@ -271,6 +278,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         super.onDestroy();
         stopRepeatingTask();
         stopLocationUpdates();
+        getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
@@ -283,7 +291,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         @Override
         public void run() {
             try {
-                sendRequest();  //refresh every 30 seconds
+                sendRequest();  //send a HTTP request and refresh every 180 seconds
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your initializeLocation method throws an exception
@@ -401,6 +409,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         didInitialize = false;
         firstTime = false;
         Log.e(TAG, "onPauseFragment()"+didInitialize+" "+firstTime);
+        getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
     }
 
     @Override
@@ -410,7 +419,8 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
             doUpdates();
         }
         startLocationUpdates();
-        startRepeatingTask();
+        startRepeatingTask(); //refresh every 3 minutes
+        getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
     //////////////////////////////////////////
 

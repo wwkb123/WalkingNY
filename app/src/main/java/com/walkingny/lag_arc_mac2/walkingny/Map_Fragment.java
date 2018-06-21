@@ -44,8 +44,12 @@ import org.json.JSONObject;
 public class Map_Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMarkerClickListener, FragmentLifecycle {
     private static final String TAG = "TAB2";
     private GoogleMap mMap;
-    double longitude = 0.0;
-    double latitude = 0.0;
+
+    //Time Square
+    double longitude = -73.9851;
+    double latitude = 40.7589;
+
+
     boolean didInitialize = false;
     boolean didStartUpdate = false;
     boolean didLoadMarkers = false;
