@@ -47,8 +47,6 @@ public class PhotoDetailsActivity extends Activity {
                 String urlHeader = "Check out the history of my location!\n\n";
                 String contentURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/SearchFromUrl.aspx?&PageToShow=1&Phrasetype=0&SearchType=2&Photos=1&Docs=0&OH=0&Video=0&Art=0&PhotoID=" + photoData.getPhotoName()+"&UniquePHId=PH_"+photoData.getPhotoID();
 
-
-
                 //share to Facebook
 //                ShareLinkContent content = new ShareLinkContent.Builder()
 //                        .setContentUrl(Uri.parse(contentURL))
@@ -65,7 +63,22 @@ public class PhotoDetailsActivity extends Activity {
                 i.putExtra(Intent.EXTRA_TEXT,urlHeader+contentURL);
                 startActivity(Intent.createChooser(i,"Share to..."));
 
+            }
+        });
 
+        askButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SENDTO);
+                String subject = "Walking New York - Question About Photo "+photoData.getPhotoName();
+                String[] address = {"sweinstein@lagcc.cuny.edu"};
+
+                i.setType("text/plain");
+                i.setData(Uri.parse("mailto:"));
+                i.putExtra(Intent.EXTRA_EMAIL, address);
+                i.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+                startActivity(Intent.createChooser(i, "Send email through..."));
             }
         });
 
