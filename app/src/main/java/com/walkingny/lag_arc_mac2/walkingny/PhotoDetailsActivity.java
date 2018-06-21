@@ -2,6 +2,7 @@ package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,19 +10,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+//import com.facebook.share.model.ShareLinkContent;
+//import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 public class PhotoDetailsActivity extends Activity {
 
     JSONData photoData;
+//    ShareDialog shareDialog;  //for sharing to Facebook
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_details);
+
+//        shareDialog = new ShareDialog(this);   //Sharing to Facebook
 
         Button shareButton = findViewById(R.id.share);
         Button askButton = findViewById(R.id.ask);
@@ -35,15 +42,33 @@ public class PhotoDetailsActivity extends Activity {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String title = "Walking NY: "+photoData.getAddress()+" - "+photoData.getPhotoDate();
+                String urlHeader = "Check out the history of my location!\n\n";
+                String contentURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/SearchFromUrl.aspx?&PageToShow=1&Phrasetype=0&SearchType=2&Photos=1&Docs=0&OH=0&Video=0&Art=0&PhotoID=" + photoData.getPhotoName()+"&UniquePHId=PH_"+photoData.getPhotoID();
+
+
+
+                //share to Facebook
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse(contentURL))
+//                        .setQuote(urlHeader)
+//                        .build();
+//
+//                shareDialog.show(content);
+
+
+                //share to apps other than Facebook
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
-                String title = "Walking NY: "+photoData.getAddress()+" - "+photoData.getPhotoDate();
-                String contentURL = "Check out the history of my location!\n\n"+"http://www.laguardiawagnerarchive.lagcc.cuny.edu/SearchFromUrl.aspx?&PageToShow=1&Phrasetype=0&SearchType=2&Photos=1&Docs=0&OH=0&Video=0&Art=0&PhotoID=" + photoData.getPhotoName()+"&UniquePHId=PH_"+photoData.getPhotoID();
                 i.putExtra(Intent.EXTRA_SUBJECT,title);
-                i.putExtra(Intent.EXTRA_TEXT,contentURL);
+                i.putExtra(Intent.EXTRA_TEXT,urlHeader+contentURL);
                 startActivity(Intent.createChooser(i,"Share to..."));
+
+
             }
         });
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
