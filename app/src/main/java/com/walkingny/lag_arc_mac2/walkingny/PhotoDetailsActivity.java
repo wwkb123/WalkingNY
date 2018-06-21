@@ -31,12 +31,28 @@ public class PhotoDetailsActivity extends Activity {
         askButton.setTransformationMethod(null);
         backButton.setTransformationMethod(null);
 
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                String title = "Walking NY: "+photoData.getAddress()+" - "+photoData.getPhotoDate();
+                String contentURL = "Check out the history of my location!\n\n"+"http://www.laguardiawagnerarchive.lagcc.cuny.edu/SearchFromUrl.aspx?&PageToShow=1&Phrasetype=0&SearchType=2&Photos=1&Docs=0&OH=0&Video=0&Art=0&PhotoID=" + photoData.getPhotoName()+"&UniquePHId=PH_"+photoData.getPhotoID();
+                i.putExtra(Intent.EXTRA_SUBJECT,title);
+                i.putExtra(Intent.EXTRA_TEXT,contentURL);
+                startActivity(Intent.createChooser(i,"Share to..."));
+            }
+        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PhotoDetailsActivity.super.onBackPressed();
             }
         });
+
+
 
         photoData = new JSONData();
         Intent i = getIntent();
