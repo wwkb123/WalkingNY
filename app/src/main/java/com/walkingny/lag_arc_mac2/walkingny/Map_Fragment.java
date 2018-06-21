@@ -71,7 +71,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         View view = inflater.inflate(R.layout.map_fragment,container,false);
 
 
-
         return view;
     }
 
@@ -87,8 +86,10 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         mMap.clear();
+
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(40.738002399999999, -73.957547599999998);
@@ -105,9 +106,8 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             setUpClusterer();
 
             /**
-             *  Reserve 0.5 seconds for the device to load the data
+             *  Reserve 0. seconds for the device to load the data
              */
-
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -144,7 +144,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                         mClusterManager.cluster();
 //                    } //end of if didLoadMarkers
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15));
-                }}, 1000);
+                }}, 800);
 
 
 
@@ -339,6 +339,13 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
 
 
     //------------------methods of updating location------------------//
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
 
     private void startLocationUpdates() {
         if(didInitialize){
@@ -350,13 +357,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         }
 
 
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
 
@@ -439,6 +439,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+        mMap.clear();
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
@@ -451,12 +452,12 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
         didStartUpdate = false;
         mMap.clear();
         didLoadMarkers = true;  //finished
-        Log.i(TAG, "onPauseFragment()"+didInitialize);
+        Log.e(TAG, "onPauseFragment()"+didInitialize);
     }
 
     @Override
     public void onResumeFragment() {
-        Log.i(TAG, "onResumeFragment()"+didInitialize);
+        Log.e(TAG, "onResumeFragment()"+didInitialize);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());

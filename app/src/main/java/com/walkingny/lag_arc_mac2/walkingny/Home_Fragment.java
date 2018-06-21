@@ -397,12 +397,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         stopRepeatingTask();
         didInitialize = false;
         firstTime = false;
-        Log.i(TAG, "onPauseFragment()"+didInitialize+" "+firstTime);
+        Log.e(TAG, "onPauseFragment()"+didInitialize+" "+firstTime);
     }
 
     @Override
     public void onResumeFragment() {
-        Log.i(TAG, "onResumeFragment()"+didInitialize);
+        Log.e(TAG, "onResumeFragment()"+didInitialize);
         if (didInitialize || !firstTime){
             doUpdates();
         }
