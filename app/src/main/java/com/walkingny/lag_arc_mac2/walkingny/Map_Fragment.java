@@ -439,7 +439,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
-        mMap.clear();
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
