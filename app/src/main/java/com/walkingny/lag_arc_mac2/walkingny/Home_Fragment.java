@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.location.GnssStatus;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -41,6 +44,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import static android.location.GpsStatus.GPS_EVENT_STARTED;
+import static android.location.GpsStatus.GPS_EVENT_STOPPED;
+
 //import java.io.BufferedInputStream;
 //import java.io.BufferedReader;
 //import java.io.IOException;
@@ -69,6 +75,10 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     private static final long INTERVAL = 1000 * 10;
     private static final long FASTEST_INTERVAL = 1000 * 5;
 
+    GnssStatus.Callback mGnssStatusCallback;
+    LocationManager mLocationManager;
+    boolean gpsStarted = false;
+
     String url = "";
 
 
@@ -81,7 +91,8 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
             if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
                 // Make an action or refresh an already managed state.
-                Log.e("GPS Status", "Changed!");
+                Log.e("GPS Status", "Changed! "+intent.getAction());
+
             }
         }
     };
@@ -171,6 +182,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
             }
         });
 
+
         return view;
     }
 
@@ -185,10 +197,52 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         return true;
     }
 
+    public final GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
+        @Override
+        public void onStarted() {
+            gpsStarted = true;
+            Log.e("GPS",gpsStarted+"");
+        }
+
+        @Override
+        public void onStopped() {
+            gpsStarted = false;
+            Log.e("GPS",gpsStarted+"");
+        }
+
+        @Override
+        public void onSatelliteStatusChanged(GnssStatus status) {
+            //Log.e("GPS","GPS started"+status.toString());
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {  //for API level >= 24
+                mLocationManager.registerGnssStatusCallback(gnssStatusListener);
+            }else{
+                mLocationManager.addGpsStatusListener(new GpsStatus.Listener() {  //for API level < 24
+                    @Override
+                    public void onGpsStatusChanged(int event) {
+                        switch(event)
+                        {
+                            case GPS_EVENT_STARTED:
+                                gpsStarted = true;
+                                break;
+                            case GPS_EVENT_STOPPED:
+                                gpsStarted = false;
+                                break;
+                        }
+                    }
+                });
+            }
+        }catch (SecurityException e){
+
+        }
 
 
         //---------Request location permission, also external storage permission for Google Play services SDK less than version 8.3---------//
@@ -197,6 +251,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         if(!hasPermissions(getActivity(), PERMISSIONS)){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
+
         }else{
             doUpdates();
         }////end of else
