@@ -2,6 +2,7 @@ package com.walkingny.lag_arc_mac2.walkingny;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.Location;
@@ -48,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private NonSwipeViewPager mViewPager;
     int currentTabPosition = 0;
     boolean firstTime = true;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = mSectionsPagerAdapter.getItem(0);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
