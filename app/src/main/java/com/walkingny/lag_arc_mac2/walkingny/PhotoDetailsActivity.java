@@ -118,7 +118,7 @@ public class PhotoDetailsActivity extends Activity {
 
             //---------display the text---------//
             addressText.setText(photoData.getAddress());
-            descText.setText(photoData.getDesc());
+            descText.setText(photoData.getDesc() + "\n"+photoData.getPhotoDate());
             copyrightText.setText(photoData.getCopyright());
 
         }catch (JSONException e){
