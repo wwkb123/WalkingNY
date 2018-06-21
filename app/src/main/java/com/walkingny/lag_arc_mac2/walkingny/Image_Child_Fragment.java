@@ -68,8 +68,8 @@ public class Image_Child_Fragment extends Fragment {
 
         if(numberOfImages==0){
             //errorMsg.setVisibility(View.VISIBLE);
-            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG);
-            toast.show();
+//            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG);
+//            toast.show();
 
         }else{
             //loadingImg.setVisibility(View.INVISIBLE);

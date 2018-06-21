@@ -22,7 +22,21 @@ public class Email_Fragment extends Fragment implements FragmentLifecycle {
         Button composeEmailButton = view.findViewById(R.id.composeEmailButton);
         composeEmailButton.setTransformationMethod(null); //disable all caps text
 
-        //Todo: add sending email code
+        composeEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SENDTO);
+                String subject = "Walking New York - General Question";
+                String[] address = {"sweinstein@lagcc.cuny.edu"};
+
+                i.setType("text/plain");
+                i.setData(Uri.parse("mailto:"));
+                i.putExtra(Intent.EXTRA_EMAIL, address);
+                i.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+                startActivity(Intent.createChooser(i, "Send email through..."));
+            }
+        });
 
         ImageButton facebookButton = view.findViewById(R.id.facebookButton);
         ImageButton twitterButton = view.findViewById(R.id.twitterButton);

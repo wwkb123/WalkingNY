@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -362,7 +363,9 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("error",error+"");
+                Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG);
+                toast.show();
             }
         });
 
