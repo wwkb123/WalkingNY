@@ -428,7 +428,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         super.onDestroy();
         stopRepeatingTask();
         stopLocationUpdates();
-        getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
+        try{
+            getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
+        }catch(IllegalArgumentException e){
+            Log.e("no gps","stop");
+        }
+
 //        mAsyncTask.cancel(true);
         Log.e("stop","stop");
     }
