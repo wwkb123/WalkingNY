@@ -1,8 +1,7 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.PorterDuff;
 import android.location.GnssStatus;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -38,9 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -57,8 +53,6 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.lang.annotation.Target;
 
 import static android.location.GpsStatus.GPS_EVENT_STARTED;
 import static android.location.GpsStatus.GPS_EVENT_STOPPED;

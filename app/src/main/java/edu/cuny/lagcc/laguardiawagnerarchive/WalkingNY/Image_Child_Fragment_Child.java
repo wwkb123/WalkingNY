@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
 /*
 This class is the Fragment of the Fragment of the Home Tab Fragment
@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 

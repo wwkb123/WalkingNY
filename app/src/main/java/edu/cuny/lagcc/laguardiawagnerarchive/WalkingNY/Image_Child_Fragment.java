@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
 /*
 This class is the Fragment of the Home Tab Fragment
@@ -7,7 +7,6 @@ This class is the Fragment of the Home Tab Fragment
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,8 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;

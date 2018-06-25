@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

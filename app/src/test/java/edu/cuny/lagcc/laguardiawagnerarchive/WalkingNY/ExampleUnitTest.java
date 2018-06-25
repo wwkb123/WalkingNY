@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.walkingny.lag_arc_mac2.WalkingNY;
 
 import org.junit.Test;
 

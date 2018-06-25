@@ -1,33 +1,21 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;

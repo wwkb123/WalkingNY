@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.walkingny.lag_arc_mac2.WalkingNY;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.walkingny.lag_arc_mac2.walkingny", appContext.getPackageName());
+        assertEquals("com.edu.cuny.lagcc.edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY.edu.cuny.lagcc.edu.cuny.lagcc.edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.walkingny.lag_arc_mac2.walkingny;
+package edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY;
 
 
 import android.content.Intent;
@@ -30,7 +30,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
