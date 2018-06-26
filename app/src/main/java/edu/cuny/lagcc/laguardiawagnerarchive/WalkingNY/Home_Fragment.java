@@ -78,6 +78,8 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     double latitude = 0.0;
     boolean didInitialize = false;
     boolean firstTime = true;
+    ImageButton refreshBtn;
+    int trials = 0;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
@@ -165,6 +167,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                trials = 0;
                                 sendRequest();
                             }},1000);
 
@@ -229,7 +232,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        final ImageButton refreshBtn = view.findViewById(R.id.refresh_button);
+        refreshBtn = view.findViewById(R.id.refresh_button);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -501,6 +504,11 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
+        try{
+            Log.e("location",gpsStarted+"");
+        }catch (SecurityException e){
+
+        }
 
 
         // Request a string response from the provided URL.
@@ -512,6 +520,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                             JSONArray response_json_arr = new JSONArray(response);
                             numberOfImages = response_json_arr.length(); //get the number of images
                             arrayToPass = response_json_arr.toString();
+                            trials = 0;
                         }catch (JSONException e) {
                             Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
                         }
@@ -519,10 +528,26 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                     }
                 }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error",error+"");
-                Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT);
-                toast.show();
+            public void onErrorResponse(final VolleyError error) {
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(trials==5){
+                            Log.e("error",error+"");
+                            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT);
+                            toast.show();
+                        }else{
+                            sendRequest();
+                            trials++;
+                            Log.e("retry",trials+"");
+                        }
+
+                    }}, 800);
+
+
+
+
             }
         });
 

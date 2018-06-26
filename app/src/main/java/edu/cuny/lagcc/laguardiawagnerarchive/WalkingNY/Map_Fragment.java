@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,6 +48,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     //Time Square
     double longitude = -73.9851;
     double latitude = 40.7589;
+    int trials = 0;
 
 
     boolean didInitialize = false;
@@ -73,6 +75,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.map_fragment,container,false);
 
+        loadJSON();
 
         return view;
     }
@@ -104,7 +107,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             mMap.setOnMyLocationClickListener(this);
 //            mMap.setOnMarkerClickListener(mClusterManager);
 
-            loadJSON();
+
 
             setUpClusterer();
 
@@ -325,6 +328,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
 
             }
         });
