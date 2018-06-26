@@ -192,6 +192,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("granted","yay from home");
                     initializeLocation();
+                    trials = 0;
                     doUpdates();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
