@@ -3,7 +3,7 @@
 <br>
 
 Available on Google Play Store now! <br>
-<a href="https://play.google.com/store/apps/details?id=edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY">Google Play Store</a>
+<a target="_blank" href="https://play.google.com/store/apps/details?id=edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY">Google Play Store</a>
 <br><br>
 The Walking New York App will show you historic photographs of Brooklyn and Queens, as it locates the block you are on and selects photos of that site or one nearby. <br><br>
 
