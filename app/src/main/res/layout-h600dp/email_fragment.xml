@@ -26,18 +26,18 @@
 
     <TextView
         android:id="@+id/emailTab2"
-        android:layout_width="281dp"
+        android:layout_width="357dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="97dp"
+        android:layout_marginTop="87dp"
+        android:text="@string/emailTab2"
+        android:textAlignment="center"
+        android:textSize="16sp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/emailTab2"
-        android:textAlignment="center"
-        android:textSize="14sp"
         android:textStyle="bold" />
 
     <Button
@@ -46,11 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="158dp"
+        android:layout_marginTop="164dp"
         android:background="@android:color/transparent"
         android:elevation="0dp"
-        android:text="@string/composeEmail"
-        android:textSize="12dp" />
+        android:text="@string/composeEmail" />
 
     <TextView
         android:id="@+id/textView5"
@@ -58,13 +57,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="213dp"
+        android:layout_marginTop="230dp"
+        android:text="Follow us on:"
+        android:textSize="16sp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        android:text="Follow us on:"
-        android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
@@ -73,38 +72,39 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
+        android:layout_marginBottom="127dp"
+        android:text="@string/emailTab3"
+        android:textAlignment="center"
+        android:textSize="16sp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/emailTab3"
-        android:textAlignment="center"
-        android:textSize="14sp" />
+        />
 
     <ImageButton
         android:id="@+id/facebookButton"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="78dp"
+        android:layout_height="77dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/emailTab2"
-        android:layout_marginBottom="115dp"
+        android:layout_alignStart="@+id/emailTab3"
+        android:layout_marginBottom="229dp"
         android:background="@drawable/facebookicon" />
 
     <ImageButton
         android:id="@+id/twitterButton"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="78dp"
+        android:layout_height="77dp"
         android:layout_alignTop="@+id/facebookButton"
         android:layout_centerHorizontal="true"
         android:background="@drawable/twittericon" />
 
     <ImageButton
         android:id="@+id/instagramButton"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="78dp"
+        android:layout_height="77dp"
+        android:layout_alignEnd="@+id/emailTab3"
         android:layout_alignTop="@+id/facebookButton"
-        android:layout_toEndOf="@+id/composeEmailButton"
         android:background="@drawable/instagramicon" />
 
 </RelativeLayout>

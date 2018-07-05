@@ -152,7 +152,7 @@ public class PhotoDetailsActivity extends Activity {
             }
 
 
-            Picasso.with(this).load(photoURL).resize(photo.getWidth(),400).into(photo);  //display the photo
+            Picasso.with(this).load(photoURL).resize(300,photo.getHeight()).into(photo);  //display the photo
 
             //---------display the text---------//
             addressText.setText(photoData.getAddress());
