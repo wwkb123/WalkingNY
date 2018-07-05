@@ -13,9 +13,14 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
+        android:textSize="16sp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
         android:text="@string/emailTab1"
         android:textAlignment="center"
-        android:textSize="16sp"
+
         tools:layout_editor_absoluteX="26dp"
         tools:layout_editor_absoluteY="37dp" />
 
@@ -29,6 +34,10 @@
         android:text="@string/emailTab2"
         android:textAlignment="center"
         android:textSize="16sp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
         android:textStyle="bold" />
 
     <Button
@@ -51,6 +60,10 @@
         android:layout_marginTop="230dp"
         android:text="Follow us on:"
         android:textSize="16sp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
         android:textStyle="bold" />
 
     <TextView
@@ -62,7 +75,12 @@
         android:layout_marginBottom="127dp"
         android:text="@string/emailTab3"
         android:textAlignment="center"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        />
 
     <ImageButton
         android:id="@+id/facebookButton"
