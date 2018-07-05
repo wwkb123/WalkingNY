@@ -1,10 +1,13 @@
 # WalkingNY
 ![logo](git_images/Walking_NY_ICON.png)
 <br>
+<<<<<<< HEAD
 
 Available on Google Play Store now! <br>
 <a target="_blank" href="https://play.google.com/store/apps/details?id=edu.cuny.lagcc.laguardiawagnerarchive.WalkingNY">Google Play Store</a>
 <br><br>
+=======
+>>>>>>> parent of ddb0fd7... Update README.md
 The Walking New York App will show you historic photographs of Brooklyn and Queens, as it locates the block you are on and selects photos of that site or one nearby. <br><br>
 
 Created by the La Guardia and Wagner Archives, La Guardia Community College, CUNY, the app features images from the New York City Housing Authority Photograph Collection (housed at the La Guardia and Wagner Archives), the Queens Public Library, and the Brooklyn Historical Society. <br><br>
