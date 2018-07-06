@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
+        android:layout_marginBottom="64dp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
@@ -87,8 +87,8 @@
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/emailTab2"
-        android:layout_marginBottom="115dp"
+        android:layout_marginBottom="205dp"
+        android:layout_toStartOf="@+id/composeEmailButton"
         android:background="@drawable/facebookicon" />
 
     <ImageButton

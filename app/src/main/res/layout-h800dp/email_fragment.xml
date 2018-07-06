@@ -57,13 +57,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="230dp"
-        android:text="Follow us on:"
-        android:textSize="16sp"
+        android:layout_marginTop="246dp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
+        android:text="Follow us on:"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
@@ -72,23 +72,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="127dp"
-        android:text="@string/emailTab3"
-        android:textAlignment="center"
-        android:textSize="16sp"
+        android:layout_marginBottom="193dp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        />
+        android:text="@string/emailTab3"
+        android:textAlignment="center"
+        android:textSize="16sp" />
 
     <ImageButton
         android:id="@+id/facebookButton"
         android:layout_width="78dp"
         android:layout_height="77dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/emailTab3"
-        android:layout_marginBottom="229dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/composeEmailButton"
         android:background="@drawable/facebookicon" />
 
     <ImageButton
@@ -103,8 +101,8 @@
         android:id="@+id/instagramButton"
         android:layout_width="78dp"
         android:layout_height="77dp"
-        android:layout_alignEnd="@+id/emailTab3"
-        android:layout_alignTop="@+id/facebookButton"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/composeEmailButton"
         android:background="@drawable/instagramicon" />
 
 </RelativeLayout>
