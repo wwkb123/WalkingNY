@@ -564,16 +564,6 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                DisplayMetrics metrics = new DisplayMetrics();
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-                int height = metrics.heightPixels;
-                int width = metrics.widthPixels;
-
-                Log.e("height",height+"");
-                Log.e("width",width+"");
-
                final Bundle bundle = new Bundle();
                 bundle.putString("num_of_images", numberOfImages+"");
                 bundle.putString("arrayToPass", arrayToPass);
