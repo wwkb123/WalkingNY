@@ -2,7 +2,7 @@
     <string name="app_name">Walking NY</string>
     <string name="tab_text_1">Home</string>
     <string name="tab_text_2">Map</string>
-    <string name="tab_text_3">Contact Us</string>
+    <string name="tab_text_3">About Us</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="emailTab1">Have some general questions about the application? \nSend us an email!</string>
