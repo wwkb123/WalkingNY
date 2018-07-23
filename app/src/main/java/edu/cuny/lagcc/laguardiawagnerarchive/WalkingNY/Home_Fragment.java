@@ -21,7 +21,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -81,6 +80,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     boolean firstTime = true;
     ImageButton refreshBtn;
     int trials = 0;
+//    boolean didRetry = false;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
@@ -124,6 +124,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 try {
                     LocationSettingsResponse response = task.getResult(ApiException.class);
                     Log.e("settings","called 2 "+response.getLocationSettingsStates());
+
                     // All location settings are satisfied. The client can initialize location
                     // requests here.
                 } catch (ApiException exception) {
@@ -296,6 +297,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
 
 
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         try {
@@ -342,7 +344,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
         //---------Request location permission, also external storage permission for Google Play services SDK less than version 8.3---------//
         int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
         getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         if(!hasPermissions(getActivity(), PERMISSIONS)){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
@@ -351,6 +353,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         }////end of else
 
         askForLocation();
+
 
     }
 
@@ -537,11 +540,13 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                     public void run() {
                         if(trials==5){
                             Log.e("error",error+"");
-                            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT);
-                            toast.show();
+
+//                            didRetry = true;
                         }else{
                             sendRequest();
                             trials++;
+                            Toast toast = Toast.makeText(getContext(), R.string.loading, Toast.LENGTH_SHORT);
+                            toast.show();
                             Log.e("retry",trials+"");
                         }
 
@@ -572,6 +577,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
 
+//                if(numberOfImages==0 && didRetry){
+//                    Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                    didRetry = false;
+//                }
+
         }}, 500);
 
         Log.e("request","sent!");
@@ -594,8 +605,13 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         if (didInitialize || !firstTime){
             doUpdates();
         }
-        startLocationUpdates();
+        boolean isGpsProviderEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkProviderEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (isGpsProviderEnabled && isNetworkProviderEnabled) {
+            startLocationUpdates();
+        }
         startRepeatingTask(); //refresh every 3 minutes
+
         getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
     //////////////////////////////////////////
