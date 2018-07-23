@@ -80,7 +80,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     boolean firstTime = true;
     ImageButton refreshBtn;
     int trials = 0;
-//    boolean didRetry = false;
+    boolean didRetry = false;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
@@ -95,6 +95,191 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
     String url = "";
 
 
+
+    ////////////////////////views////////////////////////
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        //---------Request location permission, also external storage permission for Google Play services SDK less than version 8.3---------//
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        if(!hasPermissions(getActivity(), PERMISSIONS)){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+            askForLocation();
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {  //for API level >= 24
+                    GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
+                        @Override
+                        public void onStarted() {
+                            gpsStarted = true;
+                            Log.e("GPS", gpsStarted + "");
+                        }
+
+                        @Override
+                        public void onStopped() {
+                            gpsStarted = false;
+                            Log.e("GPS", gpsStarted + "");
+                        }
+
+                        @Override
+                        public void onSatelliteStatusChanged(GnssStatus status) {
+                            //Log.e("GPS","GPS started"+status.toString());
+                        }
+                    };
+                    mLocationManager.registerGnssStatusCallback(gnssStatusListener);
+                }else{
+                    mLocationManager.addGpsStatusListener(new GpsStatus.Listener() {  //for API level < 24
+                        @Override
+                        public void onGpsStatusChanged(int event) {
+                            switch(event)
+                            {
+                                case GPS_EVENT_STARTED:
+                                    gpsStarted = true;
+                                    break;
+                                case GPS_EVENT_STOPPED:
+                                    gpsStarted = false;
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }catch (SecurityException e){
+                Log.e("Location Permission","not granted");
+            }
+        }else{
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {  //for API level >= 24
+                    GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
+                        @Override
+                        public void onStarted() {
+                            gpsStarted = true;
+                            Log.e("GPS", gpsStarted + "");
+                        }
+
+                        @Override
+                        public void onStopped() {
+                            gpsStarted = false;
+                            Log.e("GPS", gpsStarted + "");
+                        }
+
+                        @Override
+                        public void onSatelliteStatusChanged(GnssStatus status) {
+                            //Log.e("GPS","GPS started"+status.toString());
+                        }
+                    };
+                    mLocationManager.registerGnssStatusCallback(gnssStatusListener);
+                }else{
+                    mLocationManager.addGpsStatusListener(new GpsStatus.Listener() {  //for API level < 24
+                        @Override
+                        public void onGpsStatusChanged(int event) {
+                            switch(event)
+                            {
+                                case GPS_EVENT_STARTED:
+                                    gpsStarted = true;
+                                    break;
+                                case GPS_EVENT_STOPPED:
+                                    gpsStarted = false;
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }catch (SecurityException e){
+                Log.e("Location Permission","not granted");
+            }
+            doUpdates();
+            askForLocation();
+        }////end of else
+
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.home_fragment, container, false);
+
+        refreshBtn = view.findViewById(R.id.refresh_button);
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendRequest(); //refresh the images
+                Log.e("btn","pressed!");
+            }
+        });
+
+        //button click effect
+        refreshBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch ( event.getAction() ) {
+                    case MotionEvent.ACTION_DOWN:
+                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh_grey));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh));
+                        break;
+                }
+                return false;
+            }
+        });
+
+
+
+        refresher = new Handler();
+
+        TextView textView1 = view.findViewById(R.id.title);
+        textView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
+            }
+        });
+
+
+        return view;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+        stopLocationUpdates();
+        try{
+            getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
+        }catch(IllegalArgumentException e){
+            Log.e("no gps","stop");
+        }
+
+//        mAsyncTask.cancel(true);
+        Log.e("stop","stop");
+    }
+
+
+    ////////////////////////end view/////////////////////////
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////utility methods///////////////////////////////////////////////
+
+
+
+    ///////////////////checking permissions///////////////////////
     /**
      * Following broadcast receiver is to listen the Location button toggle state in Android.
      */
@@ -114,6 +299,19 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         }
     };
 
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     public void askForLocation(){
         Log.e("settings","called");
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
@@ -127,6 +325,8 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
                     // All location settings are satisfied. The client can initialize location
                     // requests here.
+                    doUpdates();
+
                 } catch (ApiException exception) {
                     Log.e("settings","error"+exception);
                     switch (exception.getStatusCode()) {
@@ -193,9 +393,10 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("granted","yay from home");
-                    initializeLocation();
+                    //initializeLocation();
                     trials = 0;
-                    doUpdates();
+                    askForLocation();
+
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -210,6 +411,15 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         }
     }
 
+
+
+
+
+
+
+
+
+    /////////////////////////update locations and send HTTP requests///////////////////////////
     private void startLocationUpdates() {
         if(didInitialize){
             try{
@@ -218,10 +428,13 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 Log.e("Security","Permission not granted!");
             }
         }
-
-
     }
 
+    private void stopLocationUpdates() {
+        if(didInitialize){
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
+    }
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
@@ -229,140 +442,9 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment, container, false);
-
-        refreshBtn = view.findViewById(R.id.refresh_button);
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendRequest(); //refresh the images
-                Log.e("btn","pressed!");
-            }
-        });
-
-        //button click effect
-        refreshBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch ( event.getAction() ) {
-                    case MotionEvent.ACTION_DOWN:
-                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh_grey));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        refreshBtn.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.refresh));
-                        break;
-                }
-                return false;
-            }
-        });
 
 
 
-        refresher = new Handler();
-
-        TextView textView1 = view.findViewById(R.id.title);
-        textView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
-            }
-        });
-
-
-        return view;
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
-
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-
-
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {  //for API level >= 24
-                GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
-                        @Override
-                        public void onStarted() {
-                            gpsStarted = true;
-                            Log.e("GPS", gpsStarted + "");
-                        }
-
-                        @Override
-                        public void onStopped() {
-                            gpsStarted = false;
-                            Log.e("GPS", gpsStarted + "");
-                        }
-
-                        @Override
-                        public void onSatelliteStatusChanged(GnssStatus status) {
-                            //Log.e("GPS","GPS started"+status.toString());
-                        }
-                    };
-                mLocationManager.registerGnssStatusCallback(gnssStatusListener);
-            }else{
-                mLocationManager.addGpsStatusListener(new GpsStatus.Listener() {  //for API level < 24
-                    @Override
-                    public void onGpsStatusChanged(int event) {
-                        switch(event)
-                        {
-                            case GPS_EVENT_STARTED:
-                                gpsStarted = true;
-                                break;
-                            case GPS_EVENT_STOPPED:
-                                gpsStarted = false;
-                                break;
-                        }
-                    }
-                });
-            }
-        }catch (SecurityException e){
-            Log.e("Location Permission","not granted");
-        }
-
-
-        //---------Request location permission, also external storage permission for Google Play services SDK less than version 8.3---------//
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
-        getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-        if(!hasPermissions(getActivity(), PERMISSIONS)){
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        }else{
-            doUpdates();
-        }////end of else
-
-        askForLocation();
-
-
-    }
-
-
-    private void stopLocationUpdates() {
-        if(didInitialize){
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        }
-    }
 
 
     //---------a method to start updating location---------//
@@ -425,23 +507,7 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 //    }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopRepeatingTask();
-        stopLocationUpdates();
-        try{
-            getActivity().unregisterReceiver(mGpsSwitchStateReceiver);
-        }catch(IllegalArgumentException e){
-            Log.e("no gps","stop");
-        }
 
-//        mAsyncTask.cancel(true);
-        Log.e("stop","stop");
-    }
-
-
-    ////////end view/////////
 
 
     Runnable mStatusChecker = new Runnable() {
@@ -538,10 +604,11 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(trials==5){
+                        if(trials==10 && !didRetry){
                             Log.e("error",error+"");
-
-//                            didRetry = true;
+                            Toast toast = Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG);
+                            toast.show();
+                            didRetry = true;
                         }else{
                             sendRequest();
                             trials++;
@@ -589,6 +656,16 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
 
     }
 
+
+    ///////////////////////////////////////////end of utility methods////////////////////////////////////////////
+
+
+
+
+
+
+
+    ///////////////////////////////Fragment life cycle interfaces//////////////////////////////////
     @Override
     public void onPauseFragment() {
         stopLocationUpdates();
@@ -605,16 +682,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         if (didInitialize || !firstTime){
             doUpdates();
         }
-        boolean isGpsProviderEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkProviderEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if (isGpsProviderEnabled && isNetworkProviderEnabled) {
-            startLocationUpdates();
-        }
+        startLocationUpdates();
         startRepeatingTask(); //refresh every 3 minutes
 
         getActivity().registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
-    //////////////////////////////////////////
+    //////////////////////////////////////////end////////////////////////////////////
 
 
 
