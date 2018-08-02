@@ -12,4 +12,4 @@ Created by the La Guardia and Wagner Archives, La Guardia Community College, CUN
 
 Users can browse the map to find all of our provided locations, as well as share photos from their locations to Facebook and Twitter. <br><br>
 
-Currently supporting Brooklyn and Queens, we will be adding Manhattan, the Bronx, and Staten Island soon, so users can find themselves fully “Walking New York.” 
+Supporting all the 5 Boroughs (Brooklyn, Queens, Manhattan, Bronx, and Staten Island) now! Users can find themselves fully “Walking New York.” 
