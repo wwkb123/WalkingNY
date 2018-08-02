@@ -237,12 +237,12 @@ public class Home_Fragment extends Fragment implements FragmentLifecycle {
         refresher = new Handler();
 
         TextView textView1 = view.findViewById(R.id.title);
-        textView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
-            }
-        });
+//        textView1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                url = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/map_app/?command=nearby&lat=40.7439+&long=-73.9347";
+//            }
+//        });
 
 
         return view;
