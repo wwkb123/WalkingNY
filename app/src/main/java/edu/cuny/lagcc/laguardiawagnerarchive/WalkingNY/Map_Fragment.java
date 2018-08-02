@@ -112,7 +112,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, Google
             setUpClusterer();
 
             /**
-             *  Reserve 0. seconds for the device to load the data
+             *  Reserve 0.8 seconds for the device to load the data
              */
 
             final Handler handler = new Handler();
