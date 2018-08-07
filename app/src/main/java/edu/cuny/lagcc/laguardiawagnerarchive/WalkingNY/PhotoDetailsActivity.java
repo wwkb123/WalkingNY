@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.facebook.share.model.ShareLinkContent;
 //import com.facebook.share.widget.ShareDialog;
@@ -21,12 +25,26 @@ import org.json.JSONObject;
 public class PhotoDetailsActivity extends Activity {
 
     JSONData photoData;
+
+    private ImageView photo;
+    private String photoURL = "";
+
 //    ShareDialog shareDialog;  //for sharing to Facebook
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_details);
+        photo = findViewById(R.id.photo);
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(PhotoDetailsActivity.this, FullScreenPhotoActivity.class);
+                i.putExtra("photoURL", photoURL); //passing the URL of that photo
+                startActivity(i); //start the activity
+            }
+        });
+
 
 //        shareDialog = new ShareDialog(this);   //Sharing to Facebook
 
@@ -101,10 +119,10 @@ public class PhotoDetailsActivity extends Activity {
             TextView addressText = findViewById(R.id.addressText);
             TextView descText = findViewById(R.id.descText);
             TextView copyrightText = findViewById(R.id.copyrightText);
-            ImageView photo = findViewById(R.id.photo);
+
 
             //---------getting photo's URL---------//
-            String photoURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/";
+            photoURL = "http://www.laguardiawagnerarchive.lagcc.cuny.edu/PHOTOS/";
 
             switch (photoData.getColID()){
                 case "01":
@@ -154,6 +172,10 @@ public class PhotoDetailsActivity extends Activity {
 
             Picasso.with(this).load(photoURL).resize(300,photo.getHeight()).into(photo);  //display the photo
 
+
+
+
+
             //---------display the text---------//
             addressText.setText(photoData.getAddress());
             descText.setText(photoData.getDesc() + "\n"+photoData.getPhotoDate());
@@ -165,4 +187,7 @@ public class PhotoDetailsActivity extends Activity {
 
 
     }
+
+
+
 }
